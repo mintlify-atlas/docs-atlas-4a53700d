@@ -1,0 +1,186 @@
+---
+title: LSP plugins
+description: Language Server Protocol integration with Mason for automatic server installation, lspconfig for server management, and lazydev for Neovim Lua development
+---
+
+LSP plugins provide intelligent code features like go-to-definition, hover documentation, diagnostics, and more through language servers.
+
+## LSP configuration
+
+The LSP setup integrates completion capabilities with nvim-cmp and provides file operation support.
+
+### Configuration
+
+```lua
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
+local capabilities = cmp_nvim_lsp.default_capabilities()
+
+vim.lsp.config("*", {
+  capabilities = capabilities,
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/lsp/lsp.lua:15`
+</Note>
+
+### Dependencies
+
+<Accordion title="LSP extensions">
+- **cmp-nvim-lsp**: Completion source for LSP
+- **nvim-lsp-file-operations**: File operation support for LSP
+- **lazydev.nvim**: Enhanced Lua development for Neovim configuration
+</Accordion>
+
+### Features
+
+- Automatic completion capabilities for all language servers
+- File operation awareness (rename, move, delete)
+- Integration with nvim-cmp for seamless completion
+
+## Mason
+
+Portable package manager for Neovim that installs and manages LSP servers, DAP servers, linters, and formatters.
+
+### Installed language servers
+
+```lua
+ensure_installed = {
+  "ts_ls",       -- TypeScript/JavaScript
+  "html",        -- HTML
+  "cssls",       -- CSS
+  "tailwindcss", -- Tailwind CSS
+  "svelte",      -- Svelte
+  "lua_ls",      -- Lua
+  "graphql",     -- GraphQL
+  "emmet_ls",    -- Emmet
+  "prismals",    -- Prisma
+  "pyright",     -- Python
+  "eslint",      -- ESLint
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/lsp/mason.lua:6`
+</Note>
+
+### UI configuration
+
+Mason uses custom icons for package status:
+
+| Icon | Status |
+|------|--------|
+| ✓ | Installed |
+| ➜ | Pending |
+| ✗ | Not installed |
+
+<Tip>
+Run `:Mason` to open the Mason UI and manage installed servers interactively.
+</Tip>
+
+## mason-lspconfig
+
+Bridges Mason and lspconfig to automatically configure installed language servers.
+
+### Features
+
+- Automatic installation of configured language servers
+- Seamless integration between Mason and lspconfig
+- Server setup with proper capabilities and handlers
+
+<Warning>
+Servers are installed asynchronously on first startup. Some LSP features may not be available until installation completes.
+</Warning>
+
+## mason-tool-installer
+
+Automatically installs and updates formatters and linters through Mason.
+
+### Installed tools
+
+<Tabs>
+  <Tab title="Formatters">
+    - **prettier**: JavaScript, TypeScript, CSS, HTML, JSON, YAML, Markdown
+    - **stylua**: Lua formatter
+    - **isort**: Python import sorter
+    - **black**: Python code formatter
+  </Tab>
+  <Tab title="Linters">
+    - **pylint**: Python linter
+    - **eslint_d**: Fast ESLint daemon
+  </Tab>
+</Tabs>
+
+```lua
+opts = {
+  ensure_installed = {
+    "prettier",
+    "stylua",
+    "isort",
+    "black",
+    "pylint",
+    "eslint_d",
+  },
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/lsp/mason.lua:38`
+</Note>
+
+### Automatic updates
+
+mason-tool-installer will check for updates and install missing tools automatically.
+
+## lazydev
+
+Enhances Lua development in Neovim with proper type checking and completion for Neovim APIs.
+
+### Features
+
+- Type checking for Neovim Lua APIs
+- Completion for `vim.*` functions
+- Plugin API documentation
+- Workspace library management
+
+<Tip>
+lazydev automatically configures lua_ls to understand Neovim's runtime and plugin APIs, eliminating "undefined global" warnings.
+</Tip>
+
+## Common LSP commands
+
+While keybindings are configured in your main config, here are common LSP operations:
+
+| Command | Description |
+|---------|-------------|
+| `:LspInfo` | Show attached language servers |
+| `:LspStart` | Start LSP client |
+| `:LspStop` | Stop LSP client |
+| `:LspRestart` | Restart LSP client |
+| `:Mason` | Open Mason UI |
+| `:MasonUpdate` | Update Mason registries |
+| `:MasonInstall <package>` | Install specific package |
+| `:MasonUninstall <package>` | Uninstall package |
+
+## Troubleshooting
+
+<Accordion title="Language server not working">
+1. Check if the server is installed: `:Mason`
+2. Verify the server is attached: `:LspInfo`
+3. Check for errors: `:messages`
+4. Try restarting the server: `:LspRestart`
+</Accordion>
+
+<Accordion title="Completion not showing LSP suggestions">
+1. Ensure the language server is running: `:LspInfo`
+2. Verify cmp-nvim-lsp is loaded
+3. Check completion sources in nvim-cmp configuration
+4. Restart the LSP server: `:LspRestart`
+</Accordion>
+
+<Accordion title="Adding a new language server">
+1. Find the server name: `:Mason` or check [lspconfig server configurations](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md)
+2. Add to `ensure_installed` in `lua/leyland/plugins/lsp/mason.lua:6`
+3. Restart Neovim
+4. Mason will automatically install the server
+</Accordion>

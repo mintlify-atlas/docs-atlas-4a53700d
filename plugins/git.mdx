@@ -1,0 +1,309 @@
+---
+title: Git plugins
+description: Powerful git integration with Neogit for staging and committing, and Diffview for visualizing changes and resolving conflicts
+---
+
+Git plugins provide a seamless git workflow directly within Neovim, eliminating the need to switch to the terminal for version control operations.
+
+## Neogit
+
+Magit-inspired git interface for Neovim with an intuitive status buffer and commit workflow.
+
+### Configuration
+
+```lua
+return {
+  "NeogitOrg/neogit",
+  lazy = true,
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "sindrets/diffview.nvim",
+    "nvim-telescope/telescope.nvim",
+    "ibhagwan/fzf-lua",
+    "nvim-mini/mini.pick",
+    "folke/snacks.nvim",
+  },
+  cmd = "Neogit",
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/neogit.lua:1`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>gg` | Normal | Open Neogit (floating window) |
+
+### Neogit status buffer keybindings
+
+Once in the Neogit status buffer, these keys are available:
+
+<Tabs>
+  <Tab title="Staging">
+    | Key | Action |
+    |-----|--------|
+    | `s` | Stage file/hunk |
+    | `u` | Unstage file/hunk |
+    | `S` | Stage all |
+    | `U` | Unstage all |
+    | `Tab` | Toggle fold |
+  </Tab>
+  <Tab title="Committing">
+    | Key | Action |
+    |-----|--------|
+    | `c` | Open commit menu |
+    | `cc` | Create commit |
+    | `ca` | Amend commit |
+    | `ce` | Extend commit |
+    | `cw` | Reword commit |
+  </Tab>
+  <Tab title="Branching">
+    | Key | Action |
+    |-----|--------|
+    | `b` | Open branch menu |
+    | `bb` | Checkout branch |
+    | `bc` | Create branch |
+    | `br` | Rename branch |
+    | `bd` | Delete branch |
+  </Tab>
+  <Tab title="Other operations">
+    | Key | Action |
+    |-----|--------|
+    | `p` | Pull |
+    | `P` | Push |
+    | `f` | Fetch |
+    | `l` | Show log |
+    | `d` | Open diff view |
+    | `?` | Show help |
+    | `q` | Close Neogit |
+  </Tab>
+</Tabs>
+
+### Features
+
+- Floating window interface
+- Visual staging and unstaging
+- Interactive commit creation
+- Branch management
+- Integration with Telescope for branch/commit selection
+- Diffview integration for viewing changes
+
+### Workflow
+
+1. Open Neogit with `<leader>gg`
+2. Navigate to changed files
+3. Press `s` to stage files or hunks
+4. Press `c` then `c` to create a commit
+5. Write commit message and save
+6. Press `P` to push changes
+
+<Tip>
+You can stage individual hunks by navigating to them in the Neogit buffer and pressing `s`. This allows for precise control over what goes into each commit.
+</Tip>
+
+### Integration with other tools
+
+Neogit integrates with multiple fuzzy finders:
+- **Telescope**: Default picker for branches and commits
+- **fzf-lua**: Alternative picker
+- **mini.pick**: Lightweight picker option
+
+<Note>
+Neogit is loaded lazily and only initializes when you run `:Neogit` or press `<leader>gg`.
+</Note>
+
+## Diffview
+
+Powerful diff viewer for comparing file changes, commit history, and resolving merge conflicts.
+
+### Configuration
+
+```lua
+return {
+  "sindrets/diffview.nvim",
+  cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/diffview.lua:1`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>dd` | Normal | Open diff view |
+| `<leader>df` | Normal | Close diff view |
+| `<leader>ds` | Normal | Open branch diff view (compare with origin/main) |
+
+### Diffview window keybindings
+
+<Tabs>
+  <Tab title="Navigation">
+    | Key | Action |
+    |-----|--------|
+    | `]c` | Next change |
+    | `[c` | Previous change |
+    | `Tab` | Toggle between files |
+    | `g<C-x>` | Focus files panel |
+  </Tab>
+  <Tab title="Actions">
+    | Key | Action |
+    |-----|--------|
+    | `-` | Toggle fold |
+    | `<leader>e` | Focus files |
+    | `<leader>b` | Toggle file panel |
+    | `gf` | Go to file in previous tab |
+  </Tab>
+  <Tab title="Merge conflicts">
+    | Key | Action |
+    |-----|--------|
+    | `do` | Obtain from left |
+    | `dp` | Put to right |
+    | `:diffget` | Get from specific side |
+    | `:diffput` | Put to specific side |
+  </Tab>
+</Tabs>
+
+### Usage examples
+
+<Accordion title="View working directory changes">
+```vim
+:DiffviewOpen
+```
+Shows diff between working directory and HEAD.
+</Accordion>
+
+<Accordion title="Compare branches">
+```vim
+:DiffviewOpen origin/main...HEAD
+```
+Shows changes in current branch compared to origin/main. Use `<leader>ds` shortcut.
+</Accordion>
+
+<Accordion title="View specific commit">
+```vim
+:DiffviewOpen HEAD~2
+```
+Shows changes in the last 2 commits.
+</Accordion>
+
+<Accordion title="View commit history">
+```vim
+:DiffviewFileHistory
+```
+Browse file history with diffs.
+</Accordion>
+
+<Accordion title="View history for specific file">
+```vim
+:DiffviewFileHistory %
+```
+Shows history for current file.
+</Accordion>
+
+### Features
+
+- Side-by-side diff view
+- File panel for quick navigation
+- Merge conflict resolution
+- Commit history browser
+- Single file history view
+- Integration with Neogit
+
+<Warning>
+Diffview opens in a new tab. Make sure to close it with `:DiffviewClose` or `<leader>df` when done to return to your normal workflow.
+</Warning>
+
+### Merge conflict resolution
+
+When you encounter merge conflicts:
+
+1. Open Diffview: `:DiffviewOpen`
+2. Navigate to conflicted file
+3. Choose changes:
+   - `do`: Take changes from left (ours)
+   - `dp`: Take changes from right (theirs)
+   - Or manually edit the file
+4. Close Diffview: `<leader>df`
+5. Stage resolved file in Neogit
+6. Complete the merge commit
+
+<Tip>
+Use `:DiffviewFileHistory %` to see the complete history of the current file. This is incredibly useful for understanding how a file evolved over time.
+</Tip>
+
+## Git workflow with nvim-luffy
+
+Here's a recommended workflow combining both plugins:
+
+<Steps>
+  <Step title="Check status">
+    Open Neogit with `<leader>gg` to see modified files and current branch.
+  </Step>
+  
+  <Step title="Review changes">
+    Press `d` in Neogit or use `<leader>dd` to open Diffview and review your changes in detail.
+  </Step>
+  
+  <Step title="Stage changes">
+    Return to Neogit and stage files or hunks with `s`. Stage selectively for better commit organization.
+  </Step>
+  
+  <Step title="Commit">
+    Press `c` then `c` in Neogit to create a commit. Write a descriptive commit message.
+  </Step>
+  
+  <Step title="Push">
+    Press `P` in Neogit to push your commits to the remote repository.
+  </Step>
+</Steps>
+
+## Additional commands
+
+### Neogit commands
+
+| Command | Description |
+|---------|-------------|
+| `:Neogit` | Open Neogit |
+| `:Neogit commit` | Open commit buffer directly |
+| `:Neogit kind=<kind>` | Open with specific kind (tab/split/floating) |
+
+### Diffview commands
+
+| Command | Description |
+|---------|-------------|
+| `:DiffviewOpen [ref]` | Open diff view |
+| `:DiffviewClose` | Close diff view |
+| `:DiffviewFileHistory [paths]` | Open file history |
+| `:DiffviewRefresh` | Refresh diff view |
+| `:DiffviewToggleFiles` | Toggle file panel |
+| `:DiffviewFocusFiles` | Focus file panel |
+
+<Note>
+Both plugins are lazy-loaded to improve startup performance. They initialize when you first use them.
+</Note>
+
+## Tips and tricks
+
+<CardGroup cols={2}>
+  <Card title="Quick commits" icon="bolt">
+    For simple commits, use Neogit's floating window: `<leader>gg`, stage with `s`, commit with `cc`, write message, and close.
+  </Card>
+  
+  <Card title="Branch comparison" icon="code-compare">
+    Use `<leader>ds` to quickly see all changes in your feature branch compared to main before creating a PR.
+  </Card>
+  
+  <Card title="Selective staging" icon="hand-pointer">
+    Navigate to specific hunks in Neogit and stage them individually for more atomic commits.
+  </Card>
+  
+  <Card title="History exploration" icon="clock-rotate-left">
+    Use `:DiffviewFileHistory %` to see how a file changed over time, perfect for understanding legacy code.
+  </Card>
+</CardGroup>

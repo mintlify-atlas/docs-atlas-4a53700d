@@ -1,0 +1,243 @@
+---
+title: Colorschemes
+description: Explore and switch between the colorschemes available in nvim-luffy
+---
+
+nvim-luffy comes with six beautiful colorschemes pre-installed. You can easily switch between them to find the one that suits your preference.
+
+## Available themes
+
+All themes are configured in `lua/leyland/plugins/colorscheme.lua` with high priority to ensure they load before other plugins:
+
+| Theme | Description | Repository |
+|-------|-------------|------------|
+| **Bamboo** (default) | A warm, nature-inspired theme | [ribru17/bamboo.nvim](https://github.com/ribru17/bamboo.nvim) |
+| **Catppuccin** | Soothing pastel theme with multiple flavors | [catppuccin/nvim](https://github.com/catppuccin/nvim) |
+| **Tokyo Night** | A clean, dark theme inspired by Tokyo's night | [folke/tokyonight.nvim](https://github.com/folke/tokyonight.nvim) |
+| **Modus Themes** | Highly accessible themes (modus-operandi/vivendi) | [miikanissi/modus-themes.nvim](https://github.com/miikanissi/modus-themes.nvim) |
+| **One Dark** | Atom's iconic One Dark theme for Neovim | [navarasu/onedark.nvim](https://github.com/navarasu/onedark.nvim) |
+| **Rosé Pine** | All natural pine, faux fur and a bit of soho vibes | [rose-pine/neovim](https://github.com/rose-pine/neovim) |
+
+## Switching themes
+
+### Temporary switch
+
+To try a theme without making it permanent, use the `:colorscheme` command:
+
+<CodeGroup>
+
+```vim Bamboo (default)
+:colorscheme bamboo
+```
+
+```vim Catppuccin
+:colorscheme catppuccin
+" Or use specific flavors:
+:colorscheme catppuccin-latte
+:colorscheme catppuccin-frappe
+:colorscheme catppuccin-macchiato
+:colorscheme catppuccin-mocha
+```
+
+```vim Tokyo Night
+:colorscheme tokyonight
+" Or use variants:
+:colorscheme tokyonight-night
+:colorscheme tokyonight-storm
+:colorscheme tokyonight-day
+:colorscheme tokyonight-moon
+```
+
+```vim Modus Themes
+:colorscheme modus
+" Or specific variants:
+:colorscheme modus_operandi
+:colorscheme modus_vivendi
+```
+
+```vim One Dark
+:colorscheme onedark
+```
+
+```vim Rosé Pine
+:colorscheme rose-pine
+" Or use variants:
+:colorscheme rose-pine-main
+:colorscheme rose-pine-moon
+:colorscheme rose-pine-dawn
+```
+
+</CodeGroup>
+
+<Tip>
+Use `:colorscheme` followed by `<Tab>` to see all available colorscheme names and variants.
+</Tip>
+
+### Permanent change
+
+To make a colorscheme your default, edit the `colorscheme.lua` file:
+
+<Steps>
+
+<Step title="Open the colorscheme configuration">
+```bash
+nvim ~/.config/nvim/lua/leyland/plugins/colorscheme.lua
+```
+</Step>
+
+<Step title="Find the config function">
+Locate the `config` function in the rose-pine plugin specification (around line 35):
+
+```lua lua/leyland/plugins/colorscheme.lua
+{
+  "rose-pine/neovim",
+  name = "rose-pine",
+  priority = 1000,
+  config = function()
+    -- Set your default theme here
+    vim.cmd.colorscheme("bamboo")
+  end,
+}
+```
+</Step>
+
+<Step title="Change the colorscheme name">
+Replace `"bamboo"` with your preferred theme:
+
+```lua
+vim.cmd.colorscheme("tokyonight")
+```
+</Step>
+
+<Step title="Save and restart Neovim">
+Save the file and restart Neovim. Your new colorscheme will be applied automatically.
+</Step>
+
+</Steps>
+
+<Warning>
+The colorscheme command is placed in the rose-pine plugin's config function because it's the last plugin in the list. This ensures all themes are loaded before applying the default.
+</Warning>
+
+## Configuring individual themes
+
+Some themes support additional configuration options. Here's how to customize them:
+
+### One Dark configuration
+
+The One Dark theme has commented-out configuration showing the "deep" style variant:
+
+```lua lua/leyland/plugins/colorscheme.lua
+{
+  "navarasu/onedark.nvim",
+  priority = 1000,
+  config = function()
+    require("onedark").setup({
+      style = "deep", -- Options: dark, darker, cool, deep, warm, warmer
+    })
+    require("onedark").load()
+  end,
+}
+```
+
+Uncomment the `config` section and modify the style to customize One Dark.
+
+### Catppuccin configuration
+
+```lua
+{
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000,
+  config = function()
+    require("catppuccin").setup({
+      flavour = "mocha", -- latte, frappe, macchiato, mocha
+      transparent_background = false,
+      integrations = {
+        telescope = true,
+        nvimtree = true,
+        treesitter = true,
+      },
+    })
+  end,
+}
+```
+
+### Tokyo Night configuration
+
+```lua
+{
+  "folke/tokyonight.nvim",
+  priority = 1000,
+  config = function()
+    require("tokyonight").setup({
+      style = "night", -- storm, moon, night, day
+      transparent = false,
+      terminal_colors = true,
+    })
+  end,
+}
+```
+
+<Info>
+Refer to each theme's repository (linked in the table above) for complete configuration options and customization possibilities.
+</Info>
+
+## Adding a new colorscheme
+
+To add a colorscheme that's not included:
+
+<Steps>
+
+<Step title="Add the plugin to colorscheme.lua">
+```lua
+{
+  "your-username/your-colorscheme",
+  priority = 1000,
+},
+```
+</Step>
+
+<Step title="Update the default colorscheme">
+Change the colorscheme name in the rose-pine config function:
+
+```lua
+vim.cmd.colorscheme("your-colorscheme-name")
+```
+</Step>
+
+<Step title="Sync plugins">
+```vim
+:Lazy sync
+```
+</Step>
+
+</Steps>
+
+## Understanding priority
+
+All colorscheme plugins have `priority = 1000` to ensure they load before other plugins. This prevents UI plugins from loading with incorrect colors.
+
+```lua
+{
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000, -- Load early
+},
+```
+
+The `lazy = false` option on bamboo ensures it's not lazy-loaded:
+
+```lua
+{
+  "ribru17/bamboo.nvim",
+  lazy = false,
+  priority = 1000,
+},
+```
+
+## Next steps
+
+- Learn how to [add more plugins](/customization/adding-plugins)
+- Understand the [config structure](/customization/modifying-config)
+- Explore individual theme documentation for advanced customization

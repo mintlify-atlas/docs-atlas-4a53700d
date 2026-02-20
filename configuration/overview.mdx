@@ -1,0 +1,74 @@
+---
+title: Configuration overview
+description: Learn how nvim-luffy's core configuration is structured and organized
+---
+
+nvim-luffy provides a clean and modular configuration structure that separates different aspects of your Neovim setup into focused modules.
+
+## Configuration structure
+
+The core configuration is located in `lua/leyland/core/` and consists of three main modules:
+
+<Steps>
+  <Step title="Options">
+    Editor settings like line numbers, indentation, and search behavior
+  </Step>
+  
+  <Step title="Keymaps">
+    Custom keyboard shortcuts and leader key mappings
+  </Step>
+  
+  <Step title="Autocommands">
+    Automatic actions triggered by events like yanking text or cursor movement
+  </Step>
+</Steps>
+
+## How it works
+
+All core modules are loaded through `lua/leyland/core/init.lua`:
+
+```lua
+require("leyland.core.options")
+require("leyland.core.keymaps")
+require("leyland.core.autocommands")
+```
+
+This initialization file ensures all configurations are loaded in the correct order when Neovim starts.
+
+## Configuration philosophy
+
+nvim-luffy follows these principles:
+
+<Accordion title="Minimal and focused">
+  Only essential settings are included by default. The configuration avoids bloat and keeps things simple.
+</Accordion>
+
+<Accordion title="Modular organization">
+  Each aspect of configuration lives in its own file, making it easy to understand and modify.
+</Accordion>
+
+<Accordion title="Sensible defaults">
+  Settings are chosen to provide a productive experience out of the box while remaining familiar to Vim users.
+</Accordion>
+
+## Quick navigation
+
+<CardGroup cols={3}>
+  <Card title="Options" icon="sliders" href="/configuration/options">
+    Configure editor behavior and appearance
+  </Card>
+  
+  <Card title="Keymaps" icon="keyboard" href="/configuration/keymaps">
+    Customize keyboard shortcuts
+  </Card>
+  
+  <Card title="Autocommands" icon="bolt" href="/configuration/autocommands">
+    Set up automatic behaviors
+  </Card>
+</CardGroup>
+
+## Next steps
+
+<Info>
+  Start with the [Options](/configuration/options) page to understand the core editor settings, then explore [Keymaps](/configuration/keymaps) to learn about available shortcuts.
+</Info>

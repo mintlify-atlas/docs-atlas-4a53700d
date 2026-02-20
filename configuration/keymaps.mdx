@@ -1,0 +1,167 @@
+---
+title: Keymaps
+description: Keyboard shortcuts and leader key mappings in nvim-luffy
+---
+
+Custom keymaps are defined in `lua/leyland/core/keymaps.lua`. These shortcuts enhance your workflow and provide quick access to common operations.
+
+## Leader key
+
+```lua
+vim.g.mapleader = " "
+```
+
+The leader key is set to **Space**. This provides an ergonomic prefix for custom shortcuts.
+
+<Info>
+  The leader key must be set before any keymaps that use it, which is why it's at the top of the keymaps file.
+</Info>
+
+## Window management
+
+### Splitting windows
+
+```lua
+keymap.set("n", "<leader>|", "<C-w>v", { desc = "Split window vertically" })
+keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })
+```
+
+<Tabs>
+  <Tab title="Vertical split">
+    **`Space` + `|`**
+    
+    Creates a vertical split to the right of the current window.
+    
+    Equivalent to pressing `Ctrl-w` followed by `v`.
+  </Tab>
+  
+  <Tab title="Horizontal split">
+    **`Space` + `sh`**
+    
+    Creates a horizontal split below the current window.
+    
+    Equivalent to pressing `Ctrl-w` followed by `s`.
+  </Tab>
+</Tabs>
+
+<Tip>
+  The vertical split uses `|` as a visual mnemonic for a vertical line, making it easy to remember.
+</Tip>
+
+## Buffer management
+
+### Closing buffers
+
+```lua
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close buffer" })
+keymap.set("n", "<leader>ba", "<cmd>%bd<CR>", { desc = "Close all buffers" })
+```
+
+<CardGroup cols={2}>
+  <Card title="Close current buffer" icon="xmark">
+    **`Space` + `bd`**
+    
+    Closes the current buffer without closing the window.
+  </Card>
+  
+  <Card title="Close all buffers" icon="trash">
+    **`Space` + `ba`**
+    
+    Closes all open buffers.
+  </Card>
+</CardGroup>
+
+<Warning>
+  Using `<leader>ba` will close all buffers without confirmation. Make sure your work is saved before using this command.
+</Warning>
+
+## Keymap reference
+
+Here's a quick reference of all available keymaps:
+
+| Keymap | Mode | Action | Description |
+|--------|------|--------|-------------|
+| `Space` + `\|` | Normal | `<C-w>v` | Split window vertically |
+| `Space` + `sh` | Normal | `<C-w>s` | Split window horizontally |
+| `Space` + `bd` | Normal | `:bd` | Close buffer |
+| `Space` + `ba` | Normal | `:%bd` | Close all buffers |
+
+## Understanding keymap structure
+
+Keymaps in nvim-luffy use Neovim's `vim.keymap.set()` function:
+
+```lua
+local keymap = vim.keymap -- for conciseness
+
+keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close buffer" })
+```
+
+<Accordion title="Function parameters">
+  1. **Mode** - `"n"` for normal mode, `"i"` for insert mode, `"v"` for visual mode
+  2. **Key combination** - The shortcut to trigger (e.g., `"<leader>bd"`)
+  3. **Action** - What happens when pressed (e.g., `"<cmd>bd<CR>"`)
+  4. **Options** - Table with metadata like `desc` for descriptions
+</Accordion>
+
+<Note>
+  The `desc` field provides descriptions that appear in which-key popups and help you remember what each keymap does.
+</Note>
+
+## Adding custom keymaps
+
+To add your own shortcuts:
+
+<Steps>
+  <Step title="Open the keymaps file">
+    Edit `lua/leyland/core/keymaps.lua`
+  </Step>
+  
+  <Step title="Add your keymap">
+    ```lua
+    keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
+    ```
+  </Step>
+  
+  <Step title="Reload configuration">
+    Restart Neovim or source the file with `:source %`
+  </Step>
+</Steps>
+
+## Commented keymaps
+
+Some keymaps are commented out but available for you to enable:
+
+### Insert mode escape
+
+```lua
+-- keymap.set("i", "jk", "<ESC>", {desc = "Exit Insert mode with jk"})
+```
+
+Uncomment this to exit insert mode by typing `jk` quickly.
+
+### Clear search highlights
+
+```lua
+-- keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
+```
+
+<Info>
+  This keymap is commented out because search highlights are automatically cleared by an autocommand when the cursor moves. See [Autocommands](/configuration/autocommands) for details.
+</Info>
+
+## Best practices
+
+<Accordion title="Use descriptive leader combinations">
+  Choose mnemonic key combinations that make sense:
+  - `bd` = "buffer delete"
+  - `sh` = "split horizontal"
+  - `ba` = "buffer all (close)"
+</Accordion>
+
+<Accordion title="Avoid overriding default Vim keys">
+  Only remap keys when necessary. Many default Vim keybindings are muscle memory for experienced users.
+</Accordion>
+
+<Accordion title="Group related keymaps">
+  Use consistent prefixes for related operations (e.g., all buffer operations start with `<leader>b`).
+</Accordion>

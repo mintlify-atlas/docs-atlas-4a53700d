@@ -1,0 +1,233 @@
+---
+title: Autocommands
+description: Automatic behaviors and event-driven actions in nvim-luffy
+---
+
+Autocommands in nvim-luffy automatically execute actions when specific events occur. They are defined in `lua/leyland/core/autocommands.lua`.
+
+## What are autocommands?
+
+Autocommands (autocmds) are event listeners that trigger callbacks when certain events happen in Neovim, such as:
+- Yanking (copying) text
+- Moving the cursor
+- Opening or closing files
+- Entering or leaving insert mode
+
+## Autogroup helper
+
+A helper function creates organized autocommand groups:
+
+```lua
+local function augroup(name)
+  return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
+end
+```
+
+<Note>
+  The `clear = true` option ensures that autocommands are cleared before being recreated, preventing duplicates when sourcing the file multiple times.
+</Note>
+
+## Active autocommands
+
+### Highlight on yank
+
+```lua
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup("highlight_yank"),
+  callback = function()
+    (vim.hl or vim.highlight).on_yank()
+  end,
+})
+```
+
+<Info>
+  Briefly highlights text when you yank (copy) it, providing visual feedback that the operation succeeded.
+</Info>
+
+**How it works:**
+- **Event**: `TextYankPost` - Triggered after yanking text
+- **Group**: `lazyvim_highlight_yank` - Organizes related autocommands
+- **Action**: Calls `vim.highlight.on_yank()` to show a highlight
+
+<Tabs>
+  <Tab title="Visual feedback">
+    When you press `yy` to yank a line, it briefly highlights in a different color so you know exactly what was copied.
+  </Tab>
+  
+  <Tab title="Compatibility">
+    Uses `vim.hl or vim.highlight` for compatibility across different Neovim versions.
+  </Tab>
+</Tabs>
+
+### Auto-clear search highlights
+
+```lua
+vim.api.nvim_create_autocmd("CursorMoved", {
+  group = vim.api.nvim_create_augroup("auto-hlsearch", { clear = true }),
+  callback = function()
+    if vim.v.hlsearch == 1 and vim.fn.searchcount().exact_match == 0 then
+      vim.schedule(function()
+        vim.cmd.nohlsearch()
+      end)
+    end
+  end,
+})
+```
+
+Automatically clears search highlights when you move the cursor away from search matches.
+
+<Accordion title="How it works">
+  1. **Trigger**: Activates every time the cursor moves (`CursorMoved` event)
+  2. **Check**: Verifies if search highlighting is active (`vim.v.hlsearch == 1`)
+  3. **Validate**: Confirms the cursor is not on an exact match (`exact_match == 0`)
+  4. **Clear**: Removes highlights using `:nohlsearch` command
+</Accordion>
+
+**Why this is useful:**
+
+<Steps>
+  <Step title="Search for text">
+    Use `/pattern` to search - all matches are highlighted
+  </Step>
+  
+  <Step title="Move away">
+    Navigate to a line without matches
+  </Step>
+  
+  <Step title="Highlights clear">
+    The highlighting automatically disappears
+  </Step>
+</Steps>
+
+<Tip>
+  This eliminates the need to manually run `:nohlsearch` (or press `<leader>nh`) after every search.
+</Tip>
+
+## Autocommand structure
+
+All autocommands follow this pattern:
+
+```lua
+vim.api.nvim_create_autocmd("EventName", {
+  group = augroup("group_name"),
+  callback = function()
+    -- Your code here
+  end,
+})
+```
+
+<CardGroup cols={3}>
+  <Card title="Event" icon="calendar">
+    When to trigger (e.g., `TextYankPost`, `CursorMoved`)
+  </Card>
+  
+  <Card title="Group" icon="layer-group">
+    Organizational namespace for related autocommands
+  </Card>
+  
+  <Card title="Callback" icon="code">
+    Function to execute when the event fires
+  </Card>
+</CardGroup>
+
+## Adding custom autocommands
+
+To add your own autocommands:
+
+<Steps>
+  <Step title="Choose an event">
+    Find the right event in `:help autocmd-events`
+    
+    Common events:
+    - `BufEnter` - After entering a buffer
+    - `BufWritePre` - Before writing a file
+    - `InsertLeave` - After leaving insert mode
+  </Step>
+  
+  <Step title="Write the autocommand">
+    ```lua
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = augroup("trim_whitespace"),
+      callback = function()
+        vim.cmd([[%s/\s\+$//e]])
+      end,
+    })
+    ```
+  </Step>
+  
+  <Step title="Add to configuration">
+    Place it in `lua/leyland/core/autocommands.lua`
+  </Step>
+  
+  <Step title="Test it">
+    Reload Neovim or source the file with `:source %`
+  </Step>
+</Steps>
+
+## Performance considerations
+
+<Warning>
+  The `CursorMoved` event fires very frequently. Use `vim.schedule()` to defer expensive operations and prevent blocking the UI.
+</Warning>
+
+```lua
+vim.schedule(function()
+  -- Deferred code runs after current event processing
+end)
+```
+
+## Common use cases
+
+<Accordion title="Auto-format on save">
+  ```lua
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    group = augroup("format_on_save"),
+    callback = function()
+      vim.lsp.buf.format()
+    end,
+  })
+  ```
+</Accordion>
+
+<Accordion title="Restore cursor position">
+  ```lua
+  vim.api.nvim_create_autocmd("BufReadPost", {
+    group = augroup("restore_cursor"),
+    callback = function()
+      local mark = vim.api.nvim_buf_get_mark(0, '"')
+      if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(0) then
+        vim.api.nvim_win_set_cursor(0, mark)
+      end
+    end,
+  })
+  ```
+</Accordion>
+
+<Accordion title="Auto-save on focus lost">
+  ```lua
+  vim.api.nvim_create_autocmd("FocusLost", {
+    group = augroup("auto_save"),
+    callback = function()
+      vim.cmd("silent! wa")
+    end,
+  })
+  ```
+</Accordion>
+
+## Debugging autocommands
+
+To see which autocommands are active:
+
+```vim
+:autocmd
+```
+
+To see autocommands for a specific group:
+
+```vim
+:autocmd lazyvim_highlight_yank
+```
+
+<Tip>
+  Use `:verbose autocmd` to see where each autocommand was defined, helpful for debugging conflicts.
+</Tip>

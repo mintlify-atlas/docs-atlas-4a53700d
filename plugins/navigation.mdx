@@ -1,0 +1,260 @@
+---
+title: Navigation plugins
+description: Fast file and project navigation with Telescope fuzzy finder, Harpoon for quick file jumping, and nvim-tree file explorer
+---
+
+Navigation plugins help you move quickly through your codebase and find what you need with minimal keystrokes.
+
+## Telescope
+
+Highly extensible fuzzy finder with multiple pickers and preview support.
+
+### Configuration
+
+```lua
+telescope.setup({
+  defaults = {
+    path_display = { "filename_first" },
+    mappings = {
+      i = {
+        ["<C-k>"] = actions.move_selection_previous,
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+      },
+    },
+  },
+  pickers = {
+    live_grep = {
+      path_display = { "truncate" },
+    },
+  },
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/telescope.lua:15`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader><leader>` | Normal | Fuzzy find files in cwd |
+| `<leader>fr` | Normal | Fuzzy find recent files |
+| `<leader>/` | Normal | Find string in cwd (live grep) |
+| `<leader>fc` | Normal | Find string under cursor in cwd |
+| `<leader>ft` | Normal | Find todos |
+| `<leader>fk` | Normal | Find keymaps |
+
+#### Telescope window mappings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<C-k>` | Insert | Move to previous result |
+| `<C-j>` | Insert | Move to next result |
+| `<C-q>` | Insert | Send selected to quickfix list |
+
+### Extensions
+
+<Accordion title="Installed Telescope extensions">
+- **telescope-fzf-native**: Native FZF sorter for better performance
+- **todo-comments**: Find TODO, FIXME, and other comment tags
+</Accordion>
+
+### Pickers
+
+<Tabs>
+  <Tab title="Files">
+    - **find_files**: Find files by name
+    - **oldfiles**: Recently opened files
+    - **file_browser**: Browse file system
+  </Tab>
+  <Tab title="Search">
+    - **live_grep**: Search for text in files
+    - **grep_string**: Search for word under cursor
+    - **current_buffer_fuzzy_find**: Search in current buffer
+  </Tab>
+  <Tab title="Vim">
+    - **keymaps**: Browse and search keymaps
+    - **help_tags**: Search help documentation
+    - **man_pages**: Search man pages
+  </Tab>
+  <Tab title="Git">
+    - **git_commits**: Browse commits
+    - **git_branches**: Switch branches
+    - **git_status**: View git status
+  </Tab>
+</Tabs>
+
+<Tip>
+Telescope displays filenames first for better readability. Full paths are shown in the preview window.
+</Tip>
+
+## Harpoon
+
+Quick file navigation system for your most important files. Mark files and jump between them instantly.
+
+### Configuration
+
+```lua
+opts = {
+  menu = {
+    width = vim.api.nvim_win_get_width(0) - 4,
+  },
+  settings = {
+    save_on_toggle = true,
+  },
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/harpoon.lua:4`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>H` | Normal | Add file to harpoon list |
+| `<leader>h` | Normal | Toggle harpoon quick menu |
+| `<leader>1` | Normal | Jump to file 1 |
+| `<leader>2` | Normal | Jump to file 2 |
+| `<leader>3` | Normal | Jump to file 3 |
+| `<leader>4` | Normal | Jump to file 4 |
+| `<leader>5` | Normal | Jump to file 5 |
+| `<leader>6` | Normal | Jump to file 6 |
+| `<leader>7` | Normal | Jump to file 7 |
+| `<leader>8` | Normal | Jump to file 8 |
+| `<leader>9` | Normal | Jump to file 9 |
+
+### Workflow
+
+1. Open a file you want to mark
+2. Press `<leader>H` to add it to harpoon
+3. Repeat for other important files
+4. Press `<leader>1` through `<leader>9` to jump between them instantly
+
+<Tip>
+Harpoon is perfect for maintaining a mental model of your most-used files. Mark your main files and jump between them without searching.
+</Tip>
+
+### Features
+
+- Persistent file marks across sessions
+- Per-project file lists
+- Automatic save on menu toggle
+- Fast switching without fuzzy finding
+
+## nvim-tree
+
+File explorer with git integration and custom keybindings.
+
+### Configuration
+
+```lua
+nvimtree.setup({
+  view = {
+    width = 50,
+    relativenumber = true,
+    side = "right",
+  },
+  renderer = {
+    indent_markers = {
+      enable = true,
+    },
+    icons = {
+      glyphs = {
+        folder = {
+          arrow_closed = "",
+          arrow_open = "",
+        },
+      },
+    },
+  },
+  git = {
+    ignore = false,
+  },
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/nvim-tree.lua:27`
+</Note>
+
+### Keybindings
+
+#### Global
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>e` | Normal | Toggle file explorer |
+
+#### nvim-tree window
+
+| Key | Description |
+|-----|-------------|
+| `l` | Open file/directory |
+| `h` | Close directory |
+| `<CR>` | Open file |
+| `a` | Create new file/directory |
+| `d` | Delete file/directory |
+| `r` | Rename file/directory |
+| `x` | Cut file/directory |
+| `c` | Copy file/directory |
+| `p` | Paste file/directory |
+| `y` | Copy filename |
+| `Y` | Copy relative path |
+| `gy` | Copy absolute path |
+| `R` | Refresh tree |
+| `?` | Show help |
+
+### Features
+
+- Git status indicators
+- File icons with nvim-web-devicons
+- Relative line numbers for quick jumping
+- Right-side positioning
+- Indent markers for better visibility
+- Filters out `.DS_Store` files
+- Shows git-ignored files
+
+<Warning>
+The file explorer disables netrw. If you need netrw functionality, you'll need to modify the configuration.
+</Warning>
+
+### Tree positioning
+
+The tree opens on the right side of the window with a width of 50 characters, keeping your main editing area on the left.
+
+<Tip>
+Use `l` and `h` in the tree for vim-style navigation: `l` to go into directories and open files, `h` to go back to parent directory.
+</Tip>
+
+## Alternative navigation tools
+
+While not separately configured, nvim-luffy includes these optional navigation tools:
+
+<Accordion title="fzf-lua">
+Alternative to Telescope with native FZF integration. Installed as a dependency for Neogit but can be used independently for fuzzy finding.
+</Accordion>
+
+<Accordion title="mini.pick">
+Minimalist picker from the mini.nvim suite. Installed as a dependency for Neogit and provides a lightweight alternative to Telescope.
+</Accordion>
+
+## Navigation workflow recommendations
+
+<CardGroup cols={2}>
+  <Card title="Quick file access" icon="bolt">
+    Use Harpoon for your 3-5 most important files in each project. Press `<leader>1` through `<leader>5` for instant access.
+  </Card>
+  <Card title="Finding files" icon="magnifying-glass">
+    Use `<leader><leader>` (Telescope find_files) when you know roughly what file you're looking for.
+  </Card>
+  <Card title="Searching content" icon="search">
+    Use `<leader>/` (Telescope live_grep) to search for text across your entire project.
+  </Card>
+  <Card title="File browsing" icon="folder-tree">
+    Use `<leader>e` (nvim-tree) when you need to browse the directory structure or perform file operations.
+  </Card>
+</CardGroup>

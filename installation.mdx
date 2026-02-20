@@ -1,0 +1,293 @@
+---
+title: Installation
+description: Step-by-step guide to installing nvim-luffy and getting your development environment ready
+---
+
+## Prerequisites
+
+Before installing nvim-luffy, ensure you have the following requirements met:
+
+<Steps>
+  <Step title="Install Neovim 0.9+">
+    nvim-luffy requires Neovim version 0.9 or higher.
+
+    <CodeGroup>
+    ```bash macOS
+    brew install neovim
+    ```
+
+    ```bash Ubuntu/Debian
+    sudo apt install neovim
+    ```
+
+    ```bash Arch Linux
+    sudo pacman -S neovim
+    ```
+
+    ```bash From source
+    git clone https://github.com/neovim/neovim
+    cd neovim
+    make CMAKE_BUILD_TYPE=Release
+    sudo make install
+    ```
+    </CodeGroup>
+
+    Verify your installation:
+    ```bash
+    nvim --version
+    ```
+  </Step>
+
+  <Step title="Install build essentials">
+    Several plugins require compilation tools:
+
+    <CodeGroup>
+    ```bash macOS
+    xcode-select --install
+    ```
+
+    ```bash Ubuntu/Debian
+    sudo apt install build-essential
+    ```
+
+    ```bash Arch Linux
+    sudo pacman -S base-devel
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Install Node.js (for LSP servers)">
+    Many language servers are distributed via npm:
+
+    <CodeGroup>
+    ```bash macOS
+    brew install node
+    ```
+
+    ```bash Ubuntu/Debian
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt install -y nodejs
+    ```
+
+    ```bash Using nvm (recommended)
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    nvm install --lts
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Install ripgrep (for Telescope)">
+    Telescope uses ripgrep for fast searching:
+
+    <CodeGroup>
+    ```bash macOS
+    brew install ripgrep
+    ```
+
+    ```bash Ubuntu/Debian
+    sudo apt install ripgrep
+    ```
+
+    ```bash Arch Linux
+    sudo pacman -S ripgrep
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Install a Nerd Font">
+    For icons to display correctly, install a [Nerd Font](https://www.nerdfonts.com/):
+
+    ```bash macOS
+    brew tap homebrew/cask-fonts
+    brew install font-jetbrains-mono-nerd-font
+    ```
+
+    Then configure your terminal to use the font.
+
+    <Tip>
+    Popular choices: JetBrains Mono Nerd Font, FiraCode Nerd Font, Hack Nerd Font
+    </Tip>
+  </Step>
+</Steps>
+
+## Installing nvim-luffy
+
+<Warning>
+If you have an existing Neovim configuration, back it up first:
+```bash
+mv ~/.config/nvim ~/.config/nvim.backup
+mv ~/.local/share/nvim ~/.local/share/nvim.backup
+```
+</Warning>
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone nvim-luffy into your Neovim config directory:
+
+    ```bash
+    git clone https://github.com/yourusername/nvim-luffy.git ~/.config/nvim
+    ```
+  </Step>
+
+  <Step title="Launch Neovim">
+    When you first launch Neovim, lazy.nvim will automatically install itself and all configured plugins:
+
+    ```bash
+    nvim
+    ```
+
+    You'll see a window showing the installation progress. This may take a few minutes depending on your internet connection.
+
+    <Info>
+    The bootstrap process automatically clones lazy.nvim if it's not found:
+    ```lua
+    local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+    if not vim.loop.fs_stat(lazypath) then
+      vim.fn.system({
+        "git", "clone", "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+      })
+    end
+    ```
+    </Info>
+  </Step>
+
+  <Step title="Install language servers">
+    Once Neovim opens, Mason will automatically install the configured language servers. You can check the status:
+
+    ```vim
+    :Mason
+    ```
+
+    The following language servers are pre-configured:
+    - **TypeScript/JavaScript**: ts_ls, eslint
+    - **HTML/CSS**: html, cssls, tailwindcss, emmet_ls
+    - **Lua**: lua_ls
+    - **Python**: pyright
+    - **GraphQL**: graphql
+    - **Svelte**: svelte
+    - **Prisma**: prismals
+
+    <Tip>
+    Mason also installs formatters: Prettier, Stylua, Black, isort, and Pylint
+    </Tip>
+  </Step>
+
+  <Step title="Install Treesitter parsers">
+    Treesitter parsers are installed automatically on first use, but you can manually install them:
+
+    ```vim
+    :TSInstall all
+    ```
+
+    Pre-configured languages include:
+    - JavaScript, TypeScript, TSX, JSX
+    - HTML, CSS, SCSS
+    - Lua, Python, Bash
+    - JSON, YAML, Markdown
+    - Dockerfile, Git files
+    - and more
+  </Step>
+
+  <Step title="Verify installation">
+    Check that everything is working:
+
+    ```vim
+    :checkhealth
+    ```
+
+    This command will show you any issues with your setup.
+  </Step>
+</Steps>
+
+## Optional: Tmux integration
+
+For seamless navigation between Neovim and Tmux, add this to your `~/.tmux.conf`:
+
+```bash ~/.tmux.conf
+# Smart pane switching with awareness of Vim splits
+is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
+    | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
+bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
+bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
+bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
+```
+
+Reload your Tmux config:
+```bash
+tmux source-file ~/.tmux.conf
+```
+
+## Updating nvim-luffy
+
+To update nvim-luffy and all plugins:
+
+<Steps>
+  <Step title="Pull latest changes">
+    ```bash
+    cd ~/.config/nvim
+    git pull
+    ```
+  </Step>
+
+  <Step title="Update plugins">
+    Open Neovim and run:
+    ```vim
+    :Lazy sync
+    ```
+  </Step>
+
+  <Step title="Update language servers">
+    ```vim
+    :MasonUpdate
+    ```
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+### Plugins not loading
+
+If plugins aren't working, try cleaning and reinstalling:
+```vim
+:Lazy clean
+:Lazy install
+```
+
+### LSP not starting
+
+Check if the language server is installed:
+```vim
+:LspInfo
+```
+
+Manually install a server:
+```vim
+:Mason
+" Navigate to the server and press 'i' to install
+```
+
+### Icons not showing
+
+Make sure you:
+1. Installed a Nerd Font
+2. Configured your terminal to use it
+3. Restarted your terminal
+
+### Treesitter errors
+
+Reinstall Treesitter parsers:
+```vim
+:TSUpdate
+```
+
+<Note>
+If you encounter issues, run `:checkhealth` for detailed diagnostic information.
+</Note>
+
+## Next steps
+
+Now that nvim-luffy is installed, proceed to the [quickstart guide](/quickstart) to learn the essential keybindings and workflows.

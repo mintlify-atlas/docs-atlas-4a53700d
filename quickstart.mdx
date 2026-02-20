@@ -1,80 +1,404 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart guide
+description: Get productive with nvim-luffy in under 5 minutes by learning the essential keybindings and workflows
 ---
 
-## Get started in three steps
+## The leader key
 
-Get your documentation site running locally and make your first customization.
+All custom keybindings in nvim-luffy use the **leader key**, which is set to `Space`.
 
-### Step 1: Set up your local environment
+<Info>
+Whenever you see `<leader>` in this guide, press the `Space` bar followed by the next key.
+</Info>
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+## Essential workflows
 
-### Step 2: Deploy your changes
+### Finding and opening files
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+The fastest way to navigate your codebase is with Telescope:
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+<CodeGroup>
+```vim Find files by name
+<leader><leader>
+" Opens Telescope file finder
+" Start typing to fuzzy search
+" Press Enter to open, Ctrl-v for vertical split
+```
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+```vim Search file contents
+<leader>/
+" Live grep across all files
+" Great for finding function definitions or text
+```
 
-### Step 3: Go live
+```vim Recent files
+<leader>fr
+" Shows recently opened files
+" Quick access to your working set
+```
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+```vim Find word under cursor
+<leader>fc
+" Searches for the word your cursor is on
+" Useful for finding all usages
+```
+</CodeGroup>
+
+<Tip>
+In Telescope, use `Ctrl-j` and `Ctrl-k` to navigate results, and `Ctrl-q` to send results to the quickfix list.
+</Tip>
+
+### File navigation with Harpoon
+
+Harpoon is your secret weapon for jumping between important files:
+
+<Steps>
+  <Step title="Mark a file">
+    ```vim
+    <leader>H
+    ```
+    Marks the current file. Do this for your 3-5 most important files in your current task.
+  </Step>
+
+  <Step title="View marked files">
+    ```vim
+    <leader>h
+    ```
+    Opens the Harpoon quick menu showing all marked files.
+  </Step>
+
+  <Step title="Jump to files instantly">
+    ```vim
+    <leader>1  " Jump to first marked file
+    <leader>2  " Jump to second marked file
+    <leader>3  " Jump to third marked file
+    " ... up to <leader>9
+    ```
+    Lightning-fast navigation without fuzzy finding.
+  </Step>
+</Steps>
+
+<Note>
+Harpoon marks are project-specific and persist across Neovim sessions.
+</Note>
+
+### File explorer
+
+Toggle the nvim-tree file explorer:
+
+```vim
+<leader>e
+" Opens file tree on the right side
+" Press again to close
+```
+
+**Inside nvim-tree:**
+- `l` - Open file or expand directory
+- `h` - Close directory
+- `a` - Create new file
+- `d` - Delete file
+- `r` - Rename file
+- `y` - Copy file
+- `p` - Paste file
+
+### Window management
+
+Split windows for side-by-side editing:
+
+```vim Window splits
+<leader>|         " Split vertically
+<leader>sh        " Split horizontally
+```
+
+**Navigate between splits:**
+```vim
+Ctrl-h    " Move to left split
+Ctrl-j    " Move to split below
+Ctrl-k    " Move to split above
+Ctrl-l    " Move to right split
+```
+
+<Info>
+These navigation keys also work with Tmux panes if you've configured Tmux integration.
+</Info>
+
+### Buffer management
+
+```vim
+<leader>bd        " Close current buffer
+<leader>ba        " Close all buffers
+```
+
+## Language server features
+
+### Code completion
+
+In insert mode, nvim-cmp automatically shows completions:
+
+```vim Insert mode
+Ctrl-Space    " Manually trigger completion
+Ctrl-j        " Next suggestion
+Ctrl-k        " Previous suggestion
+Tab           " Select suggestion or expand snippet
+Enter         " Confirm selection
+Ctrl-e        " Close completion menu
+```
+
+<Tip>
+Completions include LSP suggestions, snippets, buffer words, and file paths.
+</Tip>
+
+### LSP navigation and actions
+
+These keybindings become available when an LSP is attached:
+
+<CodeGroup>
+```vim Go to definition
+gd
+" Jumps to where a function/variable is defined
+```
+
+```vim Go to references
+gR
+" Shows all places where this symbol is used
+```
+
+```vim Go to implementation
+gi
+" Jumps to the implementation
+```
+
+```vim Hover documentation
+K
+" Shows documentation for symbol under cursor
+" Press twice to jump into the floating window
+```
+
+```vim Rename symbol
+<leader>rn
+" Renames the symbol across your entire project
+```
+
+```vim Code actions
+<leader>ca
+" Shows available code actions (fixes, refactors)
+```
+</CodeGroup>
+
+### Diagnostics
+
+View and navigate errors and warnings:
+
+```vim
+[d            " Go to previous diagnostic
+]d            " Go to next diagnostic
+<leader>d     " Show diagnostic in floating window
+```
+
+### Formatting
+
+Format your code with Conform:
+
+```vim
+<leader>mp
+" Formats current file or selected range
+" Uses Prettier, Stylua, Black, etc.
+```
+
+<Info>
+Formatting happens automatically on save. Configured formatters:
+- **JavaScript/TypeScript/React**: Prettier
+- **Lua**: Stylua
+- **Python**: isort + Black
+- **HTML/CSS/JSON/YAML**: Prettier
+</Info>
+
+## Git integration
+
+### Neogit (Git client)
+
+```vim
+<leader>gg
+" Opens Neogit in floating window
+```
+
+**Inside Neogit:**
+- `s` - Stage file or hunk
+- `u` - Unstage file or hunk
+- `c` - Commit (opens commit message editor)
+- `P` - Push
+- `F` - Pull
+- `Z` - Stash
+- `?` - Show help
+
+### Diffview
+
+View diffs in a beautiful side-by-side view:
+
+```vim
+<leader>dd        " Open diff view for current changes
+<leader>ds        " Show diff from origin/main to HEAD
+<leader>df        " Close diff view
+```
+
+## Advanced navigation
+
+### Flash (motion)
+
+Flash enables lightning-fast cursor movement:
+
+```vim Normal mode
+s{char}{char}
+" Type 's' followed by two characters
+" Labels appear - type the label to jump
+```
+
+Example: To jump to the word "function" far down in your file:
+1. Press `s`
+2. Type `fu` (first two characters)
+3. Labels appear over all matches
+4. Type the label letter to jump there
+
+### Finding TODOs
+
+Quickly find TODO comments across your project:
+
+```vim
+<leader>ft
+" Opens Telescope with all TODO, FIXME, HACK, etc.
+```
+
+### Keymaps reference
+
+Forgot a keybinding? Search them all:
+
+```vim
+<leader>fk
+" Opens Telescope showing all keymaps
+" Start typing to search
+```
+
+## Example workflow
+
+Here's a typical workflow when working on a feature:
+
+<Steps>
+  <Step title="Find the main file">
+    ```vim
+    <leader><leader>
+    " Type part of filename
+    " Open the file
+    ```
+  </Step>
+
+  <Step title="Mark it with Harpoon">
+    ```vim
+    <leader>H
+    " File is now marked as position 1
+    ```
+  </Step>
+
+  <Step title="Find related files">
+    ```vim
+    <leader>/
+    " Search for function names or imports
+    " Open related files and mark them too
+    ```
+  </Step>
+
+  <Step title="Jump between marked files">
+    ```vim
+    <leader>1  " Main file
+    <leader>2  " Test file
+    <leader>3  " Utils file
+    " Fast navigation without typing
+    ```
+  </Step>
+
+  <Step title="Make changes with LSP help">
+    ```vim
+    gd            " Jump to definitions
+    gr            " Check usages
+    <leader>rn    " Rename if needed
+    <leader>ca    " Use code actions
+    ```
+  </Step>
+
+  <Step title="Check your changes">
+    ```vim
+    <leader>dd    " View diff
+    ```
+  </Step>
+
+  <Step title="Commit with Neogit">
+    ```vim
+    <leader>gg    " Open Neogit
+    " Stage changes with 's'
+    " Commit with 'c'
+    " Push with 'P'
+    ```
+  </Step>
+</Steps>
+
+## Quick reference card
+
+### File navigation
+| Keybinding | Action |
+|------------|--------|
+| `<leader><leader>` | Find files |
+| `<leader>/` | Search in files |
+| `<leader>fr` | Recent files |
+| `<leader>e` | Toggle file tree |
+| `<leader>H` | Mark file (Harpoon) |
+| `<leader>h` | Harpoon menu |
+| `<leader>1-9` | Jump to marked file |
+
+### LSP
+| Keybinding | Action |
+|------------|--------|
+| `gd` | Go to definition |
+| `gR` | Go to references |
+| `gi` | Go to implementation |
+| `K` | Hover documentation |
+| `<leader>rn` | Rename |
+| `<leader>ca` | Code actions |
+| `<leader>mp` | Format file |
+| `[d` | Previous diagnostic |
+| `]d` | Next diagnostic |
+
+### Git
+| Keybinding | Action |
+|------------|--------|
+| `<leader>gg` | Open Neogit |
+| `<leader>dd` | Open Diffview |
+| `<leader>df` | Close Diffview |
+
+### Windows & buffers
+| Keybinding | Action |
+|------------|--------|
+| `<leader>\|` | Split vertically |
+| `<leader>sh` | Split horizontally |
+| `Ctrl-h/j/k/l` | Navigate splits |
+| `<leader>bd` | Close buffer |
+| `<leader>ba` | Close all buffers |
 
 ## Next steps
 
-Now that you have your docs running, explore these key features:
-
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Explore plugins" icon="puzzle-piece" href="/plugins/overview">
+    Deep dive into each plugin's features and configuration
+  </Card>
+  <Card title="Customize your setup" icon="sliders" href="/configuration/overview">
+    Learn how to modify options, keybindings, and add plugins
+  </Card>
+  <Card title="LSP configuration" icon="server" href="/plugins/lsp">
+    Configure language servers for your tech stack
+  </Card>
+  <Card title="Keybindings reference" icon="keyboard" href="/reference/keybindings">
+    Complete reference of all keyboard shortcuts
+  </Card>
 </CardGroup>
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+<Tip>
+Practice these keybindings for a few days and they'll become muscle memory. Focus on learning 2-3 new shortcuts each day.
+</Tip>

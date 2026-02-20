@@ -1,0 +1,94 @@
+---
+title: Plugins overview
+description: Comprehensive plugin ecosystem for nvim-luffy, providing editor enhancements, LSP integration, navigation tools, UI customization, and git workflows
+---
+
+nvim-luffy comes with a carefully curated set of plugins that provide a complete development environment. All plugins are configured out of the box and ready to use.
+
+## Plugin categories
+
+<CardGroup cols={2}>
+  <Card
+    title="Editor plugins"
+    icon="pen-to-square"
+    href="/plugins/editor"
+  >
+    Completion, autopairs, flash navigation, treesitter, and code formatting
+  </Card>
+  <Card
+    title="LSP plugins"
+    icon="code"
+    href="/plugins/lsp"
+  >
+    Language server configuration, Mason installer, and development tools
+  </Card>
+  <Card
+    title="Navigation plugins"
+    icon="compass"
+    href="/plugins/navigation"
+  >
+    Telescope, Harpoon, nvim-tree, and fuzzy finding tools
+  </Card>
+  <Card
+    title="UI plugins"
+    icon="palette"
+    href="/plugins/ui"
+  >
+    Colorscheme options, alpha dashboard, and visual enhancements
+  </Card>
+  <Card
+    title="Git plugins"
+    icon="code-branch"
+    href="/plugins/git"
+  >
+    Neogit interface and Diffview for comparing changes
+  </Card>
+</CardGroup>
+
+## Plugin management
+
+All plugins are managed with [lazy.nvim](https://github.com/folke/lazy.nvim), which provides:
+
+- Lazy loading for improved startup performance
+- Automatic plugin installation
+- Easy plugin updates
+- Dependency management
+
+<Tip>
+Check the `lazy-lock.json` file in the root directory to see exact plugin versions and commit hashes.
+</Tip>
+
+## Customizing plugins
+
+Plugin configurations are located in `lua/leyland/plugins/`. Each plugin has its own configuration file that you can modify:
+
+```lua
+return {
+  "plugin-name",
+  config = function()
+    -- Your custom configuration
+  end,
+}
+```
+
+<Note>
+Most plugins are configured with sensible defaults and keybindings that follow vim conventions.
+</Note>
+
+## Adding new plugins
+
+To add a new plugin, create a new file in `lua/leyland/plugins/` or add it to an existing file:
+
+```lua
+return {
+  "author/plugin-name",
+  event = "VeryLazy",
+  config = function()
+    require("plugin-name").setup({
+      -- Plugin options
+    })
+  end,
+}
+```
+
+Lazy.nvim will automatically detect and install the new plugin on the next startup.

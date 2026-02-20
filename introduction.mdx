@@ -1,0 +1,123 @@
+---
+title: Introduction to nvim-luffy
+description: A modern, feature-rich Neovim configuration designed for developers who want a powerful IDE experience with minimal setup
+---
+
+## Welcome to nvim-luffy
+
+nvim-luffy is a carefully crafted Neovim configuration that transforms your editor into a powerful, modern development environment. Built on top of the lazy.nvim plugin manager, it provides everything you need for productive coding right out of the box.
+
+<Note>
+"Maybe the One Piece was the commits you made along the way."
+</Note>
+
+## Why nvim-luffy?
+
+nvim-luffy combines the speed and efficiency of Neovim with a curated selection of plugins and sensible defaults. Whether you're working with TypeScript, Python, Lua, or any modern language, you'll have powerful tools at your fingertips from day one.
+
+<CardGroup cols={2}>
+  <Card title="Quick setup" icon="rocket" href="/installation">
+    Get up and running in minutes with our streamlined installation process
+  </Card>
+  <Card title="Start coding" icon="code" href="/quickstart">
+    Learn the essential keybindings and workflows in under 5 minutes
+  </Card>
+  <Card title="Plugin system" icon="puzzle-piece" href="/plugins/overview">
+    Explore the powerful plugins that make nvim-luffy productive
+  </Card>
+  <Card title="Customization" icon="sliders" href="/configuration/overview">
+    Tailor nvim-luffy to match your workflow and preferences
+  </Card>
+</CardGroup>
+
+## Core features
+
+### Smart plugin management
+
+Built on [lazy.nvim](https://github.com/folke/lazy.nvim), nvim-luffy loads plugins only when needed, ensuring fast startup times even with a rich plugin ecosystem.
+
+### Complete LSP integration
+
+Powerful language server support through Mason and nvim-lspconfig provides:
+- Automatic installation of language servers
+- Code completion with context-aware suggestions
+- Go-to-definition, find references, and rename refactoring
+- Real-time diagnostics and error checking
+- Support for TypeScript, Python, Lua, HTML, CSS, and more
+
+### Fuzzy finding with Telescope
+
+Quickly navigate your codebase with blazing-fast fuzzy finding:
+- Find files by name (`<leader><leader>`)
+- Search across all files (`<leader>/`)
+- Browse recent files (`<leader>fr`)
+- Find TODOs and comments (`<leader>ft`)
+
+### Intelligent code navigation
+
+**Harpoon** lets you mark and instantly jump between your most important files using `<leader>H` to mark and `<leader>1-9` to jump.
+
+**nvim-tree** provides a file explorer with git integration, accessible via `<leader>e`.
+
+### Git superpowers
+
+- **Neogit**: A magit-inspired git client (`<leader>gg`)
+- **Diffview**: Beautiful diff views for comparing changes (`<leader>dd`)
+- Visual branch comparisons and merge conflict resolution
+
+### Modern code editing
+
+<Info>
+nvim-luffy includes smart defaults for a pleasant editing experience.
+</Info>
+
+- **Auto-completion**: Context-aware suggestions with nvim-cmp
+- **Syntax highlighting**: Treesitter-powered highlighting for 20+ languages
+- **Auto-formatting**: Format-on-save with Conform (Prettier, Stylua, Black)
+- **Auto-pairs**: Automatic bracket and quote pairing
+- **Flash**: Lightning-fast cursor movement with search labels
+
+### Tmux integration
+
+Seamless navigation between Neovim splits and Tmux panes with `vim-tmux-navigator`, making your terminal workspace feel unified.
+
+### Beautiful aesthetics
+
+Choose from multiple premium colorschemes:
+- Bamboo (default)
+- Catppuccin
+- Tokyo Night
+- Rose Pine
+- Modus Themes
+- OneDark
+
+## Philosophy
+
+nvim-luffy embraces these principles:
+
+1. **Sensible defaults**: Works great out of the box without requiring hours of configuration
+2. **Modern tooling**: Uses the latest and most maintained plugins in the ecosystem
+3. **Performance first**: Fast startup and responsive editing through lazy loading
+4. **Developer focused**: Optimized for professional software development workflows
+5. **Extensible**: Easy to customize and extend with your own preferences
+
+## What's next?
+
+<Steps>
+  <Step title="Install nvim-luffy">
+    Follow our [installation guide](/installation) to set up nvim-luffy on your system
+  </Step>
+  <Step title="Learn the basics">
+    Complete the [quickstart guide](/quickstart) to learn essential keybindings
+  </Step>
+  <Step title="Explore plugins">
+    Discover what each plugin does in the [plugins section](/plugins/overview)
+  </Step>
+  <Step title="Make it yours">
+    Customize your setup in the [configuration guide](/configuration/overview)
+  </Step>
+</Steps>
+
+<Tip>
+The leader key is set to `Space` by default. All custom keybindings start with `<leader>` (Space).
+</Tip>

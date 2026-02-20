@@ -1,0 +1,392 @@
+---
+title: Directory structure
+description: Overview of the nvim-luffy configuration directory structure and file organization
+---
+
+This page documents the directory structure and explains the purpose of each file in nvim-luffy.
+
+## Root structure
+
+```
+init.lua                      # Entry point - loads all core modules
+lua/
+└── leyland/                  # Main configuration namespace
+    ├── core/                 # Core Neovim configuration
+    ├── plugins/              # Plugin configurations
+    ├── lazy.lua              # Lazy.nvim plugin manager setup
+    └── lsp.lua               # LSP configuration and keybindings
+```
+
+## Entry point
+
+### init.lua
+
+The main entry point that loads all configuration modules.
+
+```lua
+require("leyland.core")
+require("leyland.lazy")
+require("leyland.lsp")
+```
+
+**Purpose:** Bootstraps the entire configuration by loading core settings, plugin manager, and LSP configuration in order.
+
+**Source:** init.lua
+
+## Core configuration
+
+The `lua/leyland/core/` directory contains fundamental Neovim settings.
+
+<Accordion title="lua/leyland/core/">
+
+### core/init.lua
+
+Loads all core configuration modules.
+
+```lua
+require("leyland.core.options")
+require("leyland.core.keymaps")
+require("leyland.core.autocommands")
+```
+
+**Purpose:** Organizes core configuration loading.
+
+**Source:** lua/leyland/core/init.lua
+
+### core/options.lua
+
+Defines Neovim options and settings.
+
+**Contains:**
+- Display settings (line numbers, statusline, winbar)
+- Tab and indentation settings
+- Search configuration
+- Clipboard integration
+- Window splitting behavior
+- LSP log level configuration
+
+**Source:** lua/leyland/core/options.lua
+
+### core/keymaps.lua
+
+Defines global keybindings.
+
+**Contains:**
+- Leader key configuration (`Space`)
+- Window management keybindings
+- Buffer management keybindings
+
+**Source:** lua/leyland/core/keymaps.lua
+
+### core/autocommands.lua
+
+Defines autocommands for automatic behavior.
+
+**Contains:**
+- Highlight on yank
+- Auto clear search highlights
+
+**Source:** lua/leyland/core/autocommands.lua
+
+</Accordion>
+
+## Plugin manager
+
+### lazy.lua
+
+Configures the Lazy.nvim plugin manager.
+
+**Purpose:**
+- Bootstraps Lazy.nvim if not installed
+- Sets up plugin loading from `leyland.plugins` and `leyland.plugins.lsp`
+- Configures update checker and change detection
+
+**Source:** lua/leyland/lazy.lua
+
+## LSP configuration
+
+### lsp.lua
+
+Configures Language Server Protocol functionality.
+
+**Contains:**
+- LSP attach autocommand
+- LSP keybindings (definitions, references, diagnostics, etc.)
+- Diagnostic configuration (signs and underline settings)
+
+**Source:** lua/leyland/lsp.lua
+
+## Plugin configurations
+
+The `lua/leyland/plugins/` directory contains individual plugin configurations. Each file returns a Lazy.nvim plugin specification.
+
+### UI plugins
+
+<Accordion title="UI and appearance">
+
+#### plugins/colorscheme.lua
+
+Defines multiple colorscheme plugins and sets the default theme.
+
+**Includes:**
+- catppuccin/nvim
+- tokyonight.nvim
+- modus-themes.nvim
+- bamboo.nvim (default)
+- onedark.nvim
+- rose-pine
+
+**Source:** lua/leyland/plugins/colorscheme.lua
+
+#### plugins/alpha.lua
+
+Configures the Alpha dashboard (startup screen).
+
+**Features:**
+- Custom ASCII art header
+- Quick action buttons
+- Custom footer with quote
+
+**Source:** lua/leyland/plugins/alpha.lua
+
+#### plugins/snacks.lua
+
+Configures Snacks.nvim for smooth scrolling.
+
+**Features:**
+- Smooth scroll animation
+- Linear easing with 100ms total duration
+
+**Source:** lua/leyland/plugins/snacks.lua
+
+</Accordion>
+
+### Editor enhancement plugins
+
+<Accordion title="Editing and navigation">
+
+#### plugins/treesitter.lua
+
+Configures Treesitter for syntax highlighting and code understanding.
+
+**Ensures installation for:**
+- Web: JavaScript, TypeScript, HTML, CSS, TSX
+- Markup: JSON, YAML, Markdown
+- Backend: Lua, Bash, Python
+- Other: Prisma, GraphQL, Docker, Git
+
+**Source:** lua/leyland/plugins/treesitter.lua
+
+#### plugins/telescope.lua
+
+Configures Telescope fuzzy finder.
+
+**Features:**
+- File finding
+- Live grep
+- Old files
+- TODO comments integration
+- Custom insert mode mappings
+
+**Source:** lua/leyland/plugins/telescope.lua
+
+#### plugins/nvim-tree.lua
+
+Configures file explorer.
+
+**Features:**
+- Right-side placement with 50 character width
+- Relative line numbers
+- Custom navigation keybindings (`h`/`l`)
+- Indent markers
+- Git integration
+
+**Source:** lua/leyland/plugins/nvim-tree.lua
+
+#### plugins/harpoon.lua
+
+Configures Harpoon for quick file navigation.
+
+**Features:**
+- Quick file marking
+- Jump to marked files with `<leader>1` through `<leader>9`
+- Auto-save on toggle
+
+**Source:** lua/leyland/plugins/harpoon.lua
+
+#### plugins/flash.lua
+
+Configures Flash for enhanced motion and search.
+
+**Features:**
+- Jump to any location with `s`
+- Treesitter-based selection
+- Remote flash for operator-pending mode
+- Incremental selection with `<c-space>`
+
+**Source:** lua/leyland/plugins/flash.lua
+
+</Accordion>
+
+### Completion and snippets
+
+<Accordion title="Autocompletion">
+
+#### plugins/nvim-cmp.lua
+
+Configures nvim-cmp for autocompletion.
+
+**Features:**
+- LSP completion
+- Snippet expansion with LuaSnip
+- Buffer and path completion
+- VS Code-like pictograms
+- Tab completion
+
+**Source:** lua/leyland/plugins/nvim-cmp.lua
+
+#### plugins/autopairs.lua
+
+Configures automatic bracket and quote pairing.
+
+**Features:**
+- Treesitter integration
+- Language-specific configuration
+- Integration with nvim-cmp
+
+**Source:** lua/leyland/plugins/autopairs.lua
+
+</Accordion>
+
+### LSP and tooling
+
+<Accordion title="LSP and language tools">
+
+#### plugins/lsp/mason.lua
+
+Configures Mason for LSP server, formatter, and linter management.
+
+**Auto-installs:**
+
+**LSP Servers:**
+- ts_ls (TypeScript/JavaScript)
+- html, cssls, tailwindcss
+- svelte
+- lua_ls
+- graphql, emmet_ls, prismals
+- pyright, eslint
+
+**Formatters/Linters:**
+- prettier, stylua
+- isort, black
+- pylint, eslint_d
+
+**Source:** lua/leyland/plugins/lsp/mason.lua
+
+#### plugins/lsp/lsp.lua
+
+Configures LSP capabilities for autocompletion.
+
+**Dependencies:**
+- cmp-nvim-lsp
+- nvim-lsp-file-operations
+- lazydev.nvim (Lua development)
+
+**Source:** lua/leyland/plugins/lsp/lsp.lua
+
+#### plugins/formatting.lua
+
+Configures Conform for code formatting.
+
+**Features:**
+- Format on save (3000ms timeout)
+- Manual format with `<leader>mp`
+- Language-specific formatters
+- LSP fallback
+
+**Source:** lua/leyland/plugins/formatting.lua
+
+#### plugins/trouble.lua
+
+Configures Trouble for diagnostics list.
+
+**Features:**
+- Pretty diagnostics list
+- Toggle with `<leader>xx`
+
+**Source:** lua/leyland/plugins/trouble.lua
+
+</Accordion>
+
+### Git integration
+
+<Accordion title="Git tools">
+
+#### plugins/neogit.lua
+
+Configures Neogit for Git operations.
+
+**Features:**
+- Magit-like Git interface
+- Floating window mode
+- Integration with diffview and telescope
+
+**Source:** lua/leyland/plugins/neogit.lua
+
+#### plugins/diffview.lua
+
+Configures Diffview for viewing diffs.
+
+**Features:**
+- View file diffs
+- Compare branches
+- File history
+
+**Source:** lua/leyland/plugins/diffview.lua
+
+</Accordion>
+
+### Utility plugins
+
+<Accordion title="Utilities">
+
+#### plugins/init.lua
+
+Loads utility plugins without complex configuration.
+
+**Includes:**
+- plenary.nvim (Lua utility functions)
+- vim-tmux-navigator (Seamless tmux/vim navigation)
+
+**Source:** lua/leyland/plugins/init.lua
+
+</Accordion>
+
+## File organization principles
+
+<Note>
+nvim-luffy follows a modular organization pattern:
+
+1. **Separation of concerns:** Core settings, plugins, and LSP are separated into distinct modules
+2. **Single responsibility:** Each plugin configuration is in its own file
+3. **Lazy loading:** Plugins are loaded only when needed using Lazy.nvim events, commands, and keys
+4. **Namespace isolation:** All configuration lives under the `leyland` namespace to avoid conflicts
+</Note>
+
+## Loading order
+
+The configuration loads in this order:
+
+1. **init.lua** - Entry point
+2. **leyland.core** - Core settings
+   - options.lua
+   - keymaps.lua
+   - autocommands.lua
+3. **leyland.lazy** - Plugin manager setup
+   - Loads all plugins from `leyland.plugins`
+   - Loads LSP plugins from `leyland.plugins.lsp`
+4. **leyland.lsp** - LSP configuration
+
+<Info>
+Plugins are loaded lazily based on their configuration (events, commands, keys), so they don't all load at startup.
+</Info>

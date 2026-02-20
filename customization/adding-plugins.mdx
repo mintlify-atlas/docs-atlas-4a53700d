@@ -1,0 +1,171 @@
+---
+title: Adding plugins
+description: Learn how to add and configure new plugins in nvim-luffy using lazy.nvim
+---
+
+nvim-luffy uses [lazy.nvim](https://github.com/folke/lazy.nvim) as its plugin manager. This guide will show you how to add new plugins to your configuration.
+
+## Plugin structure
+
+All plugins are located in the `lua/leyland/plugins/` directory. Each plugin is defined in its own Lua file that returns a table (or array of tables) with plugin specifications.
+
+<Info>
+The lazy.nvim setup automatically imports all files from `leyland.plugins` and `leyland.plugins.lsp` directories.
+</Info>
+
+## Adding a simple plugin
+
+<Steps>
+
+<Step title="Create a new file">
+Create a new `.lua` file in `~/.config/nvim/lua/leyland/plugins/`. For example, to add a plugin for Markdown preview:
+
+```bash
+touch ~/.config/nvim/lua/leyland/plugins/markdown-preview.lua
+```
+</Step>
+
+<Step title="Define the plugin specification">
+Add the plugin configuration. The simplest form is just the plugin repository:
+
+```lua
+return {
+  "iamcco/markdown-preview.nvim",
+  build = "cd app && npm install",
+  ft = "markdown",
+}
+```
+</Step>
+
+<Step title="Restart Neovim">
+Restart Neovim or run `:Lazy sync` to install the new plugin. lazy.nvim will automatically detect and load your new plugin file.
+</Step>
+
+</Steps>
+
+## Plugin configuration options
+
+Here's a real example from nvim-luffy showing telescope.nvim configuration:
+
+```lua lua/leyland/plugins/telescope.lua
+return {
+  "nvim-telescope/telescope.nvim",
+  branch = "0.1.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "nvim-tree/nvim-web-devicons",
+  },
+  config = function()
+    local telescope = require("telescope")
+    local actions = require("telescope.actions")
+    
+    telescope.setup({
+      defaults = {
+        path_display = { "filename_first" },
+        mappings = {
+          i = {
+            ["<C-k>"] = actions.move_selection_previous,
+            ["<C-j>"] = actions.move_selection_next,
+          },
+        },
+      },
+    })
+    
+    telescope.load_extension("fzf")
+  end,
+}
+```
+
+### Key configuration fields
+
+| Field | Description | Example |
+|-------|-------------|----------|
+| `dependencies` | Other plugins this plugin requires | `"nvim-lua/plenary.nvim"` |
+| `branch` | Git branch to use | `"0.1.x"` |
+| `build` | Command to run after install/update | `":TSUpdate"`, `"make"` |
+| `config` | Function to run after plugin loads | `function() ... end` |
+| `event` | Load plugin on specific events | `{ "BufReadPre", "BufNewFile" }` |
+| `ft` | Load plugin for specific filetypes | `"markdown"` or `{ "lua", "vim" }` |
+| `lazy` | Whether to lazy-load the plugin | `false` (load on startup) |
+| `priority` | Load order (higher = earlier) | `1000` |
+
+## Multiple plugins in one file
+
+You can return an array of plugin specifications from a single file. Here's the `init.lua` file:
+
+```lua lua/leyland/plugins/init.lua
+return {
+  "nvim-lua/plenary.nvim", -- lua functions that many plugins use
+  "christoomey/vim-tmux-navigator", -- tmux & split window navigation
+}
+```
+
+## Advanced configuration example
+
+Here's a more complex example showing treesitter configuration:
+
+```lua lua/leyland/plugins/treesitter.lua
+return {
+  "nvim-treesitter/nvim-treesitter",
+  branch = "master",
+  event = { "BufReadPre", "BufNewFile" },
+  build = ":TSUpdate",
+  config = function()
+    require("nvim-treesitter").setup({
+      ensure_installed = {
+        "json",
+        "javascript",
+        "typescript",
+        "tsx",
+        "yaml",
+        "html",
+        "css",
+        "lua",
+        "vim",
+        "markdown",
+        "bash",
+      },
+    })
+    vim.treesitter.language.register("bash", "zsh")
+  end,
+}
+```
+
+<Tip>
+Use the `event` field to lazy-load plugins only when needed. This improves startup time. Common events include `"BufReadPre"`, `"VeryLazy"`, and `"InsertEnter"`.
+</Tip>
+
+## Managing plugins with lazy.nvim
+
+After adding plugins, use these commands:
+
+<CodeGroup>
+
+```vim Install new plugins
+:Lazy install
+```
+
+```vim Update all plugins
+:Lazy update
+```
+
+```vim Open lazy.nvim UI
+:Lazy
+```
+
+```vim Sync (clean, install, and update)
+:Lazy sync
+```
+
+</CodeGroup>
+
+<Warning>
+The lazy.nvim configuration in `lua/leyland/lazy.lua` has change detection notifications disabled. You won't see popups when configuration files change, but plugins will still update correctly.
+</Warning>
+
+## Next steps
+
+- Learn about [modifying the config structure](/customization/modifying-config)
+- Explore [available colorschemes](/customization/colorschemes)
+- Check out the [lazy.nvim documentation](https://github.com/folke/lazy.nvim) for more advanced options

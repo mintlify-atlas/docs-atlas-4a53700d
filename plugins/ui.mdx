@@ -1,0 +1,290 @@
+---
+title: UI plugins
+description: Visual customization with multiple colorscheme options, alpha dashboard for startup screen, and snacks for smooth scrolling
+---
+
+UI plugins enhance the visual appearance and user experience of nvim-luffy with beautiful themes and interface improvements.
+
+## Colorschemes
+
+nvim-luffy comes with six carefully selected colorschemes. You can switch between them at any time.
+
+### Available themes
+
+<CardGroup cols={2}>
+  <Card title="Catppuccin" icon="cat">
+    Soothing pastel theme with multiple flavors (Latte, Frappé, Macchiato, Mocha)
+  </Card>
+  <Card title="Tokyo Night" icon="moon">
+    Dark theme inspired by Tokyo's night skyline
+  </Card>
+  <Card title="Modus Themes" icon="circle-half-stroke">
+    Highly accessible themes designed for comfortable reading
+  </Card>
+  <Card title="Bamboo" icon="leaf">
+    Nature-inspired colorscheme (default)
+  </Card>
+  <Card title="OneDark" icon="palette">
+    Port of Atom's iconic One Dark theme
+  </Card>
+  <Card title="Rose Pine" icon="rose">
+    All natural pine, faux fur and a bit of soho vibes
+  </Card>
+</CardGroup>
+
+### Configuration
+
+```lua
+return {
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "folke/tokyonight.nvim", priority = 1000 },
+  { "miikanissi/modus-themes.nvim", priority = 1000 },
+  { "ribru17/bamboo.nvim", lazy = false, priority = 1000 },
+  { "navarasu/onedark.nvim", priority = 1000 },
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme("bamboo")
+    end,
+  },
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/colorscheme.lua:3`
+</Note>
+
+### Default theme
+
+The default colorscheme is set to **Bamboo**. You can change this by modifying the colorscheme command:
+
+```lua
+vim.cmd.colorscheme("bamboo")
+```
+
+### Switching themes
+
+To change your colorscheme, use the `:colorscheme` command:
+
+```vim
+:colorscheme catppuccin
+:colorscheme tokyonight
+:colorscheme modus
+:colorscheme bamboo
+:colorscheme onedark
+:colorscheme rose-pine
+```
+
+<Tip>
+All colorschemes are installed with high priority to ensure they load before other plugins that depend on color definitions.
+</Tip>
+
+### Theme variants
+
+<Accordion title="Catppuccin variants">
+Catppuccin offers four flavors:
+- **Latte**: Light theme
+- **Frappé**: Medium dark theme
+- **Macchiato**: Dark theme
+- **Mocha**: Very dark theme (default)
+
+Set the variant in your config:
+```lua
+require("catppuccin").setup({
+  flavour = "mocha",
+})
+```
+</Accordion>
+
+<Accordion title="Tokyo Night variants">
+Tokyo Night has three styles:
+- **night**: Default dark theme
+- **storm**: Storm variant with different background
+- **day**: Light variant
+
+Set the style:
+```lua
+require("tokyonight").setup({
+  style = "night",
+})
+```
+</Accordion>
+
+<Accordion title="OneDark variants">
+OneDark supports multiple styles:
+- **dark**: Default dark style
+- **darker**: Darker background
+- **cool**: Cooler color palette
+- **deep**: Deep dark background
+- **warm**: Warmer tones
+- **warmer**: Even warmer tones
+
+Uncomment and configure in `lua/leyland/plugins/colorscheme.lua:24`:
+```lua
+require("onedark").setup({
+  style = "deep",
+})
+```
+</Accordion>
+
+## Alpha dashboard
+
+Startup dashboard with ASCII art and quick access buttons.
+
+### Configuration
+
+```lua
+dashboard.section.buttons.val = {
+  dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
+  dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
+  dashboard.button("q", "  Quit", ":qa<CR>"),
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/alpha.lua:44`
+</Note>
+
+### Features
+
+- Custom ASCII art header (One Piece Luffy)
+- Quick access buttons for common actions
+- Inspirational footer quote
+- Appears on startup when no files are opened
+
+### Dashboard buttons
+
+| Key | Action |
+|-----|--------|
+| `f` | Open file finder |
+| `r` | Show recent files |
+| `q` | Quit Neovim |
+
+### Customizing the header
+
+The ASCII art header is defined in `dashboard.section.header.val`. You can replace it with your own ASCII art:
+
+```lua
+dashboard.section.header.val = {
+  "Your ASCII art here",
+  "Line by line",
+}
+```
+
+### Customizing the quote
+
+The footer quote is configurable:
+
+```lua
+dashboard.section.footer.val = {
+  "",
+  '"Maybe the One Piece was the commits you made along the way."',
+  "",
+}
+```
+
+<Tip>
+Alpha automatically disables folding on the dashboard buffer for a cleaner appearance.
+</Tip>
+
+## Snacks
+
+Smooth scrolling animations and other UI enhancements.
+
+### Configuration
+
+```lua
+opts = {
+  scroll = {
+    enabled = true,
+    animate = {
+      duration = { step = 10, total = 100 },
+      easing = "linear",
+    },
+  },
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/snacks.lua:5`
+</Note>
+
+### Features
+
+- Smooth scrolling animations for better visual tracking
+- Configurable animation duration and easing
+- Minimal performance impact
+
+### Animation settings
+
+<Accordion title="Duration options">
+- **step**: Duration per animation step (default: 10ms)
+- **total**: Total animation duration (default: 100ms)
+
+Adjust for faster or slower scrolling:
+```lua
+duration = { step = 5, total = 50 }  -- Faster
+duration = { step = 15, total = 150 } -- Slower
+```
+</Accordion>
+
+<Accordion title="Easing functions">
+Available easing options:
+- **linear**: Constant speed (default)
+- **quadratic**: Accelerate then decelerate
+- **cubic**: More pronounced acceleration curve
+
+Change the easing:
+```lua
+easing = "quadratic"
+```
+</Accordion>
+
+### Disabling smooth scrolling
+
+If you prefer instant scrolling, disable the feature:
+
+```lua
+opts = {
+  scroll = {
+    enabled = false,
+  },
+}
+```
+
+## Additional UI enhancements
+
+These plugins are dependencies and provide icons and visual improvements:
+
+<Accordion title="nvim-web-devicons">
+Provides file type icons throughout the UI:
+- File explorer icons
+- Completion menu icons
+- Statusline icons
+- Tab line icons
+
+Required by: nvim-tree, telescope, alpha
+</Accordion>
+
+## UI customization tips
+
+<CardGroup cols={2}>
+  <Card title="Choose the right theme" icon="palette">
+    Try different colorschemes to find one that works for your environment. Modus themes are excellent for eye strain, while Tokyo Night and Catppuccin offer vibrant colors.
+  </Card>
+  <Card title="Adjust transparency" icon="eye">
+    Many themes support transparent backgrounds. Check the theme's documentation for configuration options.
+  </Card>
+  <Card title="Customize dashboard" icon="house">
+    Modify the alpha dashboard to show your most-used commands and personalize the ASCII art and quotes.
+  </Card>
+  <Card title="Fine-tune animations" icon="wand-magic-sparkles">
+    Adjust scroll animation speed based on your preferences and hardware capabilities.
+  </Card>
+</CardGroup>
+
+<Warning>
+Some colorschemes may require additional configuration for optimal appearance with specific plugins. Check the theme's documentation if colors don't look right.
+</Warning>

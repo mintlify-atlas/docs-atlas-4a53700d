@@ -1,0 +1,225 @@
+---
+title: Commands
+description: Reference for Neovim commands and options used in nvim-luffy
+---
+
+This page documents the Neovim commands, autocommands, and options configured in nvim-luffy.
+
+## Custom commands
+
+### LSP commands
+
+| Command | Description | Source |
+|---------|-------------|--------|
+| `:LspRestart` | Restart the LSP server attached to the current buffer | lua/leyland/lsp.lua:51 |
+
+### Plugin commands
+
+<Accordion title="Telescope commands">
+| Command | Description |
+|---------|-------------|
+| `:Telescope find_files` | Find files in current working directory |
+| `:Telescope oldfiles` | Browse recently opened files |
+| `:Telescope live_grep` | Search for strings in current working directory |
+| `:Telescope grep_string` | Search for string under cursor |
+| `:Telescope lsp_references` | List LSP references |
+| `:Telescope lsp_implementations` | List LSP implementations |
+| `:Telescope lsp_type_definitions` | List LSP type definitions |
+| `:Telescope diagnostics` | List diagnostics |
+| `:Telescope keymaps` | List all keymaps |
+| `:TodoTelescope` | Find TODO comments |
+</Accordion>
+
+<Accordion title="Nvim-tree commands">
+| Command | Description |
+|---------|-------------|
+| `:NvimTreeFindFileToggle` | Toggle file explorer and focus current file |
+| `:NvimTreeToggle` | Toggle file explorer |
+| `:NvimTreeFocus` | Focus file explorer |
+| `:NvimTreeFindFile` | Find and focus current file in explorer |
+</Accordion>
+
+<Accordion title="Git commands">
+| Command | Description |
+|---------|-------------|
+| `:Neogit` | Open Neogit git interface |
+| `:DiffviewOpen` | Open diff view for current changes |
+| `:DiffviewClose` | Close diff view |
+| `:DiffviewToggleFiles` | Toggle file panel in diff view |
+| `:DiffviewFocusFiles` | Focus file panel in diff view |
+</Accordion>
+
+<Accordion title="Treesitter commands">
+| Command | Description |
+|---------|-------------|
+| `:TSUpdate` | Update all installed Treesitter parsers |
+| `:TSInstall <language>` | Install Treesitter parser for specified language |
+</Accordion>
+
+<Accordion title="Mason commands">
+| Command | Description |
+|---------|-------------|
+| `:Mason` | Open Mason UI for managing LSP servers, formatters, and linters |
+| `:MasonUpdate` | Update Mason registry |
+| `:MasonInstall <package>` | Install a package |
+| `:MasonUninstall <package>` | Uninstall a package |
+</Accordion>
+
+<Accordion title="Trouble commands">
+| Command | Description |
+|---------|-------------|
+| `:Trouble diagnostics toggle` | Toggle diagnostics list |
+</Accordion>
+
+<Accordion title="Lazy commands">
+| Command | Description |
+|---------|-------------|
+| `:Lazy` | Open Lazy plugin manager UI |
+| `:Lazy sync` | Install, update, and clean plugins |
+| `:Lazy update` | Update plugins |
+| `:Lazy install` | Install missing plugins |
+| `:Lazy clean` | Remove unused plugins |
+</Accordion>
+
+## Autocommands
+
+### Highlight on yank
+
+Automatically highlights yanked text briefly for visual feedback.
+
+```lua
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup("highlight_yank"),
+  callback = function()
+    (vim.hl or vim.highlight).on_yank()
+  end,
+})
+```
+
+**Source:** lua/leyland/core/autocommands.lua:5
+
+### Auto clear search highlights
+
+Automatically clears search highlights when the cursor moves and there are no exact matches.
+
+```lua
+vim.api.nvim_create_autocmd("CursorMoved", {
+  group = vim.api.nvim_create_augroup("auto-hlsearch", { clear = true }),
+  callback = function()
+    if vim.v.hlsearch == 1 and vim.fn.searchcount().exact_match == 0 then
+      vim.schedule(function()
+        vim.cmd.nohlsearch()
+      end)
+    end
+  end,
+})
+```
+
+**Source:** lua/leyland/core/autocommands.lua:13
+
+### LSP on attach
+
+Automatically sets up LSP keybindings when an LSP server attaches to a buffer.
+
+**Source:** lua/leyland/lsp.lua:2
+
+### Alpha on VimEnter
+
+Displays the Alpha dashboard when Neovim starts without a file.
+
+**Source:** lua/leyland/plugins/alpha.lua:3
+
+### Disable folding on Alpha buffer
+
+Disables folding on the Alpha dashboard buffer.
+
+```lua
+vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+```
+
+**Source:** lua/leyland/plugins/alpha.lua:67
+
+## Vim options
+
+These options are configured in lua/leyland/core/options.lua.
+
+### Display options
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `relativenumber` | `true` | Show relative line numbers |
+| `number` | `true` | Show absolute line number on cursor line |
+| `cmdheight` | `0` | Hide command line when not in use |
+| `laststatus` | `0` | Hide statusline |
+| `winbar` | `"%f %h%m%r%=%l,%c %P"` | Show file info in window bar |
+| `wrap` | `false` | Disable line wrapping |
+| `signcolumn` | `"yes"` | Always show sign column |
+| `background` | `"dark"` | Use dark background |
+
+### Indentation options
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `tabstop` | `2` | Number of spaces a tab counts for |
+| `shiftwidth` | `2` | Number of spaces for each indent |
+| `expandtab` | `true` | Convert tabs to spaces |
+| `autoindent` | `true` | Copy indent from current line |
+
+### Search options
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `ignorecase` | `true` | Case insensitive search |
+| `smartcase` | `true` | Case sensitive if search contains uppercase |
+
+### System options
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `swapfile` | `false` | Disable swap files |
+| `clipboard` | `"unnamedplus"` | Use system clipboard |
+| `splitright` | `true` | Split vertical windows to the right |
+| `splitbelow` | `true` | Split horizontal windows below |
+| `backspace` | `"indent,eol,start"` | Allow backspace over everything |
+
+### LSP options
+
+```lua
+vim.lsp.set_log_level("error") -- Only show errors, not warnings
+```
+
+**Source:** lua/leyland/core/options.lua:42
+
+### Netrw options
+
+```lua
+vim.cmd("let g:netrw_liststyle = 3") -- Tree style listing
+```
+
+**Source:** lua/leyland/core/options.lua:1
+
+## Diagnostic configuration
+
+Custom diagnostic signs and underline configuration.
+
+```lua
+vim.diagnostic.config({
+  underline = {
+    severity = { min = severity.ERROR },
+  },
+  signs = {
+    text = {
+      [severity.ERROR] = " ",
+      [severity.WARN] = " ",
+      [severity.HINT] = "󰠠 ",
+      [severity.INFO] = " ",
+    },
+  },
+})
+```
+
+**Source:** lua/leyland/lsp.lua:59
+
+<Info>
+Only errors are underlined, but all severity levels have custom signs in the sign column.
+</Info>

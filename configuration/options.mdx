@@ -1,0 +1,187 @@
+---
+title: Options
+description: Configure editor behavior, appearance, and functionality in nvim-luffy
+---
+
+Editor options are configured in `lua/leyland/core/options.lua`. These settings control how Neovim behaves and appears.
+
+## Display settings
+
+### Line numbers
+
+```lua
+opt.relativenumber = true
+opt.number = true
+```
+
+Both absolute and relative line numbers are enabled, providing the best of both worlds:
+- The current line shows the absolute line number
+- Other lines show relative distances for quick navigation
+
+### Status and command line
+
+```lua
+opt.cmdheight = 0
+opt.laststatus = 0 -- Hide the statusline
+opt.winbar = "%f %h%m%r%=%l,%c %P"
+```
+
+<Note>
+  The statusline is hidden in favor of a winbar that displays file information, modification status, and cursor position.
+</Note>
+
+The winbar format includes:
+- `%f` - File path
+- `%h%m%r` - Help, modified, and readonly flags
+- `%l,%c` - Line and column number
+- `%P` - Percentage through file
+
+### Sign column
+
+```lua
+opt.signcolumn = "yes"
+```
+
+Always shows the sign column to prevent text from shifting when diagnostics or git signs appear.
+
+## Indentation and formatting
+
+### Tab settings
+
+```lua
+opt.tabstop = 2
+opt.shiftwidth = 2 -- 2 spaces for indent width
+opt.expandtab = true -- expand tab to spaces
+opt.autoindent = true -- copy indent of current line to new line
+```
+
+<Tabs>
+  <Tab title="tabstop">
+    Sets the width of a tab character to 2 spaces
+  </Tab>
+  
+  <Tab title="shiftwidth">
+    Uses 2 spaces when indenting with `>` or auto-indenting
+  </Tab>
+  
+  <Tab title="expandtab">
+    Converts tab keypresses to spaces
+  </Tab>
+  
+  <Tab title="autoindent">
+    New lines inherit indentation from the previous line
+  </Tab>
+</Tabs>
+
+<Tip>
+  Use `:h autoindent` to learn more about automatic indentation behavior.
+</Tip>
+
+### Line wrapping
+
+```lua
+opt.wrap = false
+```
+
+Long lines extend beyond the screen edge rather than wrapping to the next line.
+
+## Search behavior
+
+```lua
+opt.ignorecase = true -- case insensitive search
+opt.smartcase = true -- uses mixed case for case sensitive search
+```
+
+<Info>
+  Smart case search is case-insensitive by default, but becomes case-sensitive when your search pattern contains uppercase letters.
+</Info>
+
+**Examples:**
+- `/hello` matches "hello", "Hello", "HELLO"
+- `/Hello` matches only "Hello" (case-sensitive)
+
+## Window splitting
+
+```lua
+opt.splitright = true -- split vertical window to the right
+opt.splitbelow = true -- split horizontal window to the bottom
+```
+
+New splits open in intuitive positions:
+- Vertical splits (`:vsplit`) open to the right
+- Horizontal splits (`:split`) open below
+
+## Clipboard integration
+
+```lua
+opt.clipboard:append("unnamedplus")
+```
+
+The system clipboard is used as the default register, allowing seamless copy/paste between Neovim and other applications.
+
+## File handling
+
+### Swap files
+
+```lua
+opt.swapfile = false
+```
+
+<Warning>
+  Swap files are disabled. Make sure to save your work frequently or use a plugin that provides auto-save functionality.
+</Warning>
+
+### Backspace behavior
+
+```lua
+opt.backspace = "indent,eol,start"
+```
+
+Backspace can delete:
+- Indentation at the start of a line
+- Line breaks (end of line)
+- Characters before where insert mode started
+
+## Color and appearance
+
+```lua
+opt.background = "dark"
+```
+
+Sets the background to dark mode, affecting how colorschemes render.
+
+## File browser
+
+```lua
+vim.cmd("let g:netrw_liststyle = 3")
+```
+
+Configures netrw (the built-in file browser) to use tree-style listing.
+
+## LSP settings
+
+```lua
+vim.lsp.set_log_level("error")
+```
+
+<Note>
+  LSP logging is set to only show errors, reducing noise from warnings and informational messages.
+</Note>
+
+## Modifying options
+
+To customize any option, edit `lua/leyland/core/options.lua`:
+
+<Steps>
+  <Step title="Locate the option">
+    Find the setting you want to change in the file
+  </Step>
+  
+  <Step title="Modify the value">
+    Change the value to your preference
+  </Step>
+  
+  <Step title="Reload configuration">
+    Restart Neovim or source the file with `:source %`
+  </Step>
+</Steps>

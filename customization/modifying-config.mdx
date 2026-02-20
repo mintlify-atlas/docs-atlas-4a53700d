@@ -1,0 +1,224 @@
+---
+title: Modifying config
+description: Understand the nvim-luffy configuration structure and how to customize it
+---
+
+nvim-luffy follows a modular configuration structure that separates core settings, plugins, and LSP configuration into distinct directories.
+
+## Configuration structure
+
+The configuration is organized under `~/.config/nvim/lua/leyland/`:
+
+```
+lua/leyland/
+├── core/              # Core Neovim settings
+│   ├── init.lua       # Loads all core modules
+│   ├── options.lua    # Vim options (line numbers, tabs, etc.)
+│   ├── keymaps.lua    # General keybindings
+│   └── autocommands.lua # Autocommands and autocmds
+├── plugins/           # Plugin configurations
+│   ├── init.lua       # Basic plugins without complex config
+│   ├── telescope.lua  # Telescope fuzzy finder
+│   ├── treesitter.lua # Syntax highlighting
+│   ├── colorscheme.lua # Theme configurations
+│   ├── lsp/           # LSP-related plugins
+│   │   ├── lsp.lua    # LSP configuration
+│   │   └── mason.lua  # LSP installer
+│   └── ...            # Other plugin configs
+├── lazy.lua           # lazy.nvim plugin manager setup
+└── lsp.lua            # LSP server configurations
+```
+
+## Core configuration
+
+The `core/` directory contains fundamental Neovim settings that don't depend on plugins.
+
+### Options
+
+Edit `core/options.lua` to modify Vim options like:
+- Line numbers and relative numbers
+- Indentation settings (tabs vs spaces)
+- Search behavior
+- UI options (cursor line, sign column, etc.)
+
+<CodeGroup>
+
+```lua Example options
+-- Line numbers
+vim.opt.number = true
+vim.opt.relativenumber = true
+
+-- Tabs & indentation
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
+-- Search settings
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+```
+
+</CodeGroup>
+
+### Keymaps
+
+Edit `core/keymaps.lua` to add or modify global keybindings. Plugin-specific keymaps are typically defined in their respective plugin files.
+
+```lua Example keymap
+vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
+```
+
+<Info>
+The leader key in nvim-luffy is set to `<Space>` by default. Change it in `core/options.lua` or `core/keymaps.lua`.
+</Info>
+
+### Autocommands
+
+The `core/autocommands.lua` file contains automatic commands that trigger on specific events, such as:
+- Highlighting yanked text
+- Auto-formatting on save
+- Filetype-specific settings
+
+## Plugin configuration
+
+The `plugins/` directory is where all plugin specifications live. Each file should return a table or array of tables following the lazy.nvim plugin spec format.
+
+### Plugin organization
+
+<Steps>
+
+<Step title="Single-purpose plugins">
+Plugins with minimal or no configuration go in `plugins/init.lua`:
+
+```lua lua/leyland/plugins/init.lua
+return {
+  "nvim-lua/plenary.nvim",
+  "christoomey/vim-tmux-navigator",
+}
+```
+</Step>
+
+<Step title="Complex plugins">
+Plugins requiring setup or keymaps get their own file:
+
+```lua lua/leyland/plugins/telescope.lua
+return {
+  "nvim-telescope/telescope.nvim",
+  dependencies = { "nvim-lua/plenary.nvim" },
+  config = function()
+    -- Setup and keymaps here
+  end,
+}
+```
+</Step>
+
+<Step title="LSP plugins">
+LSP-related plugins are in the `plugins/lsp/` subdirectory and are automatically imported by lazy.nvim:
+
+```lua lua/leyland/lazy.lua
+require("lazy").setup({
+  { import = "leyland.plugins" },
+  { import = "leyland.plugins.lsp" },
+})
+```
+</Step>
+
+</Steps>
+
+## lazy.nvim setup
+
+The `lazy.lua` file bootstraps the plugin manager and configures how plugins are loaded:
+
+```lua lua/leyland/lazy.lua
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup({
+  { import = "leyland.plugins" },
+  { import = "leyland.plugins.lsp" },
+}, {
+  checker = {
+    enabled = true,
+    notify = false,
+  },
+  change_detection = {
+    notify = false,
+  },
+})
+```
+
+<Tip>
+The configuration automatically checks for plugin updates (`checker.enabled = true`) but won't show notifications. Use `:Lazy` to see available updates.
+</Tip>
+
+## LSP configuration
+
+Language Server Protocol (LSP) configuration is split between:
+
+1. **`plugins/lsp/lsp.lua`** - LSP client configuration, keybindings, and capabilities
+2. **`plugins/lsp/mason.lua`** - LSP server installation and management
+3. **`lsp.lua`** (root level) - Individual server configurations
+
+<Warning>
+When modifying LSP configurations, you may need to restart the LSP server using `:LspRestart` or restart Neovim for changes to take effect.
+</Warning>
+
+## Making changes
+
+When modifying the configuration:
+
+<Steps>
+
+<Step title="Edit the relevant file">
+Navigate to the appropriate file based on what you want to change:
+- Core settings → `core/`
+- Plugin behavior → `plugins/`
+- LSP servers → `lsp.lua` or `plugins/lsp/`
+</Step>
+
+<Step title="Save and reload">
+After saving changes:
+
+<CodeGroup>
+
+```vim Reload config (limited)
+:source %
+```
+
+```vim Restart Neovim (recommended)
+:qa
+nvim
+```
+
+```vim Sync plugins if you modified plugin files
+:Lazy sync
+```
+
+</CodeGroup>
+</Step>
+
+<Step title="Verify changes">
+Test that your changes work as expected. Check for errors using `:messages` or `:checkhealth`.
+</Step>
+
+</Steps>
+
+<Note>
+Some changes (like plugin additions or removals) require a full Neovim restart to take effect. Core option changes can often be applied with `:source %`.
+</Note>
+
+## Next steps
+
+- Learn how to [add new plugins](/customization/adding-plugins)
+- Customize your [colorscheme](/customization/colorschemes)
+- Check the [lazy.nvim documentation](https://github.com/folke/lazy.nvim) for advanced plugin management

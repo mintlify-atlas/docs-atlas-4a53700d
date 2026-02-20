@@ -1,0 +1,200 @@
+---
+title: Keybindings
+description: Comprehensive reference of all keybindings in nvim-luffy
+---
+
+This page documents all keybindings configured in nvim-luffy. The leader key is set to `Space`.
+
+## General keybindings
+
+### Window management
+
+| Keybinding | Mode | Description |
+|------------|------|-------------|
+| `<leader>\|` | Normal | Split window vertically |
+| `<leader>sh` | Normal | Split window horizontally |
+
+### Buffer management
+
+| Keybinding | Mode | Description |
+|------------|------|-------------|
+| `<leader>bd` | Normal | Close current buffer |
+| `<leader>ba` | Normal | Close all buffers |
+
+<Note>
+The keybindings for exiting insert mode (`jk`) and clearing search highlights (`<leader>nh`) are commented out in the default configuration.
+</Note>
+
+## LSP keybindings
+
+These keybindings are available when an LSP server is attached to the current buffer.
+
+### Navigation
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `gR` | Normal | Show LSP references | lua/leyland/lsp.lua:11 |
+| `gd` | Normal | Go to declaration/definition | lua/leyland/lsp.lua:14 |
+| `gi` | Normal | Show LSP implementations | lua/leyland/lsp.lua:20 |
+| `gt` | Normal | Show LSP type definitions | lua/leyland/lsp.lua:23 |
+
+### Code actions
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>ca` | Normal, Visual | See available code actions | lua/leyland/lsp.lua:26 |
+| `<leader>rn` | Normal | Smart rename | lua/leyland/lsp.lua:29 |
+| `K` | Normal | Show documentation for symbol under cursor | lua/leyland/lsp.lua:48 |
+
+<Info>
+In visual mode, `<leader>ca` will apply code actions to the selected text.
+</Info>
+
+### Diagnostics
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>D` | Normal | Show buffer diagnostics | lua/leyland/lsp.lua:32 |
+| `<leader>d` | Normal | Show line diagnostics | lua/leyland/lsp.lua:35 |
+| `[d` | Normal | Go to previous diagnostic | lua/leyland/lsp.lua:38 |
+| `]d` | Normal | Go to next diagnostic | lua/leyland/lsp.lua:43 |
+| `<leader>rs` | Normal | Restart LSP | lua/leyland/lsp.lua:51 |
+
+## Plugin keybindings
+
+### Telescope
+
+Fuzzy finder and search functionality.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader><leader>` | Normal | Fuzzy find files in cwd | lua/leyland/plugins/telescope.lua:38 |
+| `<leader>fr` | Normal | Fuzzy find recent files | lua/leyland/plugins/telescope.lua:39 |
+| `<leader>/` | Normal | Find string in cwd | lua/leyland/plugins/telescope.lua:40 |
+| `<leader>fc` | Normal | Find string under cursor in cwd | lua/leyland/plugins/telescope.lua:41 |
+| `<leader>ft` | Normal | Find todos | lua/leyland/plugins/telescope.lua:42 |
+| `<leader>fk` | Normal | Find keymaps | lua/leyland/plugins/telescope.lua:43 |
+
+<Accordion title="Telescope insert mode mappings">
+When inside a Telescope picker:
+
+| Keybinding | Description |
+|------------|-------------|
+| `<C-k>` | Move to previous result |
+| `<C-j>` | Move to next result |
+| `<C-q>` | Send selected to quickfix list and open |
+</Accordion>
+
+### Nvim-tree
+
+File explorer functionality.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>e` | Normal | Toggle file explorer | lua/leyland/plugins/nvim-tree.lua:5 |
+
+<Accordion title="Nvim-tree buffer mappings">
+When inside the nvim-tree buffer:
+
+| Keybinding | Description |
+|------------|-------------|
+| `l` | Open file or directory |
+| `h` | Close directory |
+
+All default nvim-tree mappings are also available.
+</Accordion>
+
+### Harpoon
+
+Quick file navigation.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>H` | Normal | Add file to Harpoon | lua/leyland/plugins/harpoon.lua:15 |
+| `<leader>h` | Normal | Toggle Harpoon quick menu | lua/leyland/plugins/harpoon.lua:22 |
+| `<leader>1` | Normal | Jump to Harpoon file 1 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>2` | Normal | Jump to Harpoon file 2 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>3` | Normal | Jump to Harpoon file 3 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>4` | Normal | Jump to Harpoon file 4 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>5` | Normal | Jump to Harpoon file 5 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>6` | Normal | Jump to Harpoon file 6 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>7` | Normal | Jump to Harpoon file 7 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>8` | Normal | Jump to Harpoon file 8 | lua/leyland/plugins/harpoon.lua:31-39 |
+| `<leader>9` | Normal | Jump to Harpoon file 9 | lua/leyland/plugins/harpoon.lua:31-39 |
+
+### Git integration
+
+#### Neogit
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>gg` | Normal | Open Neogit (floating) | lua/leyland/plugins/neogit.lua:15 |
+
+#### Diffview
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>dd` | Normal | Open diff view | lua/leyland/plugins/diffview.lua:5 |
+| `<leader>df` | Normal | Close diff view | lua/leyland/plugins/diffview.lua:6 |
+| `<leader>ds` | Normal | Open branch diff view (origin/main...HEAD) | lua/leyland/plugins/diffview.lua:7 |
+
+### Trouble
+
+Diagnostics list.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>xx` | Normal | Toggle Trouble diagnostics | lua/leyland/plugins/trouble.lua:6 |
+
+### Flash
+
+Enhanced motion and search.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `s` | Normal, Visual, Operator | Flash jump | lua/leyland/plugins/flash.lua:20 |
+| `S` | Normal, Visual, Operator | Flash Treesitter | lua/leyland/plugins/flash.lua:21 |
+| `r` | Operator | Remote Flash | lua/leyland/plugins/flash.lua:22 |
+| `R` | Operator, Visual | Treesitter Search | lua/leyland/plugins/flash.lua:23 |
+| `<c-s>` | Command | Toggle Flash Search | lua/leyland/plugins/flash.lua:24 |
+| `<c-space>` | Normal, Visual, Operator | Treesitter Incremental Selection | lua/leyland/plugins/flash.lua:26 |
+
+<Accordion title="Flash char mode navigation">
+When using Flash in char mode:
+
+| Keybinding | Description |
+|------------|-------------|
+| `;` | Next match |
+| `,` | Previous match |
+</Accordion>
+
+### Formatting
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<leader>mp` | Normal, Visual | Format file or range | lua/leyland/plugins/formatting.lua:31 |
+
+<Info>
+Formatting also runs automatically on save with a 3000ms timeout.
+</Info>
+
+### Completion (nvim-cmp)
+
+These keybindings are active in insert mode when the completion menu is visible.
+
+| Keybinding | Mode | Description | Source |
+|------------|------|-------------|--------|
+| `<C-k>` | Insert | Previous suggestion | lua/leyland/plugins/nvim-cmp.lua:35 |
+| `<C-j>` | Insert | Next suggestion | lua/leyland/plugins/nvim-cmp.lua:36 |
+| `<C-b>` | Insert | Scroll docs up | lua/leyland/plugins/nvim-cmp.lua:37 |
+| `<C-f>` | Insert | Scroll docs down | lua/leyland/plugins/nvim-cmp.lua:38 |
+| `<C-Space>` | Insert | Show completion suggestions | lua/leyland/plugins/nvim-cmp.lua:39 |
+| `<C-e>` | Insert | Close completion window | lua/leyland/plugins/nvim-cmp.lua:40 |
+| `<CR>` | Insert | Confirm selection | lua/leyland/plugins/nvim-cmp.lua:41 |
+| `<Tab>` | Insert | Next item or expand snippet | lua/leyland/plugins/nvim-cmp.lua:42 |
+
+## Utility plugins
+
+### Vim-tmux-navigator
+
+Seamless navigation between tmux panes and Neovim windows using standard vim motions (`<C-h>`, `<C-j>`, `<C-k>`, `<C-l>`).

@@ -1,0 +1,236 @@
+---
+title: Editor plugins
+description: Core editing functionality including completion, autopairs, flash navigation, treesitter syntax highlighting, and code formatting with Conform
+---
+
+Editor plugins provide the foundation for a modern development experience with intelligent completion, automatic pair insertion, fast navigation, and code formatting.
+
+## nvim-cmp
+
+Autocompletion engine with support for multiple sources including LSP, snippets, buffer text, and file paths.
+
+### Configuration
+
+The completion engine is configured with VS Code-like pictograms and multiple completion sources:
+
+```lua
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "path" },
+  }),
+  formatting = {
+    format = lspkind.cmp_format({
+      maxwidth = 50,
+      ellipsis_char = "...",
+    }),
+  },
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/nvim-cmp.lua:28`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<C-k>` | Insert | Previous suggestion |
+| `<C-j>` | Insert | Next suggestion |
+| `<C-b>` | Insert | Scroll docs up |
+| `<C-f>` | Insert | Scroll docs down |
+| `<C-Space>` | Insert | Show completion suggestions |
+| `<C-e>` | Insert | Close completion window |
+| `<CR>` | Insert | Confirm selection |
+| `<Tab>` | Insert | Next item or expand snippet |
+
+### Dependencies
+
+<Accordion title="Completion sources and extensions">
+- **cmp-buffer**: Text from current buffer
+- **cmp-path**: File system paths
+- **LuaSnip**: Snippet engine
+- **cmp_luasnip**: LuaSnip completion source
+- **friendly-snippets**: Pre-made snippet collection
+- **lspkind.nvim**: VS Code-like pictograms
+</Accordion>
+
+## nvim-autopairs
+
+Automatically insert closing pairs for brackets, quotes, and other characters with treesitter integration.
+
+### Configuration
+
+```lua
+autopairs.setup({
+  check_ts = true,
+  ts_config = {
+    lua = { "string" },
+    javascript = { "template_string" },
+    java = false,
+  },
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/autopairs.lua:12`
+</Note>
+
+### Features
+
+- Treesitter-aware pair insertion
+- Integrates with nvim-cmp for automatic pair insertion on completion
+- Language-specific rules for pair behavior
+
+<Tip>
+Autopairs won't insert pairs inside string nodes in Lua or template strings in JavaScript, making it smarter about context.
+</Tip>
+
+## Flash
+
+Enhanced motion plugin for blazing fast navigation with labels.
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `s` | Normal, Visual, Operator | Flash jump |
+| `S` | Normal, Visual, Operator | Flash treesitter |
+| `r` | Operator | Remote flash |
+| `R` | Visual, Operator | Treesitter search |
+| `<C-s>` | Command | Toggle flash search |
+| `<C-Space>` | Normal, Visual, Operator | Treesitter incremental selection |
+
+<Note>
+Location: `lua/leyland/plugins/flash.lua:19`
+</Note>
+
+### Configuration
+
+```lua
+opts = {
+  modes = {
+    char = {
+      char_actions = function(motion)
+        return {
+          [";"] = "next",
+          [","] = "prev",
+        }
+      end,
+    },
+  },
+}
+```
+
+### Usage
+
+1. Press `s` in normal mode
+2. Type the character you want to jump to
+3. Flash will label all matches on screen
+4. Type the label to jump to that location
+
+<Tip>
+Use `S` for treesitter-aware jumps that understand code structure like functions and classes.
+</Tip>
+
+## Treesitter
+
+Advanced syntax highlighting and code understanding based on tree-sitter parsers.
+
+### Installed parsers
+
+```lua
+ensure_installed = {
+  "json", "javascript", "typescript", "tsx",
+  "yaml", "html", "css", "prisma",
+  "markdown", "markdown_inline", "svelte",
+  "graphql", "bash", "lua", "vim",
+  "dockerfile", "gitignore", "query",
+  "vimdoc", "c",
+}
+```
+
+<Note>
+Location: `lua/leyland/plugins/treesitter.lua:8`
+</Note>
+
+### Features
+
+- Accurate syntax highlighting based on AST
+- Incremental parsing for performance
+- Language-aware text objects
+- Custom language registration (e.g., zsh as bash)
+
+<Warning>
+The first time you open a file type, treesitter will download and compile the parser. This may take a few seconds.
+</Warning>
+
+## Conform (formatting)
+
+Code formatting with support for multiple formatters per filetype.
+
+### Configured formatters
+
+<Tabs>
+  <Tab title="Web development">
+    - **JavaScript/TypeScript**: Prettier
+    - **React (JSX/TSX)**: Prettier
+    - **Svelte**: Prettier
+    - **CSS**: Prettier
+    - **HTML**: Prettier
+  </Tab>
+  <Tab title="Data formats">
+    - **JSON**: Prettier
+    - **YAML**: Prettier
+    - **Markdown**: Prettier
+    - **GraphQL**: Prettier
+  </Tab>
+  <Tab title="Other languages">
+    - **Lua**: Stylua
+    - **Python**: isort, black (chained)
+  </Tab>
+</Tabs>
+
+### Configuration
+
+```lua
+conform.setup({
+  formatters_by_ft = {
+    javascript = { "prettier" },
+    typescript = { "prettier" },
+    lua = { "stylua" },
+    python = { "isort", "black" },
+  },
+  format_on_save = {
+    lsp_fallback = true,
+    async = false,
+    timeout_ms = 3000,
+  },
+})
+```
+
+<Note>
+Location: `lua/leyland/plugins/formatting.lua:7`
+</Note>
+
+### Keybindings
+
+| Key | Mode | Description |
+|-----|------|-------------|
+| `<leader>mp` | Normal, Visual | Format file or range |
+
+### Format on save
+
+Conform is configured to automatically format files on save with a 3-second timeout. If no formatter is configured for the filetype, it falls back to LSP formatting.
+
+<Tip>
+In visual mode, `<leader>mp` will format only the selected range, useful for formatting specific code blocks.
+</Tip>
