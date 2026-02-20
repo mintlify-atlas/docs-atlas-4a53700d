@@ -1,0 +1,90 @@
+{
+  "projectType": "general",
+  "projectName": "nvim-luffy",
+  "projectDescription": "A modern, modular Neovim configuration built with Lua and lazy.nvim",
+  "theme": "palm",
+  "primaryColor": "#3CB371",
+  "lightColor": "#4DC97F",
+  "darkColor": "#2E8B57",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "installation",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration/overview",
+          "configuration/options",
+          "configuration/keymaps",
+          "configuration/autocommands"
+        ]
+      },
+      {
+        "group": "Plugins",
+        "pages": [
+          "plugins/overview",
+          "plugins/editor",
+          "plugins/lsp",
+          "plugins/navigation",
+          "plugins/ui",
+          "plugins/git"
+        ]
+      },
+      {
+        "group": "Customization",
+        "pages": [
+          "customization/adding-plugins",
+          "customization/modifying-config",
+          "customization/colorschemes"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/keybindings",
+          "reference/commands",
+          "reference/structure"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Lazy plugin management with lazy.nvim",
+    "Full LSP support with Mason and nvim-lspconfig",
+    "Fuzzy finding with Telescope",
+    "File navigation with Harpoon and nvim-tree",
+    "Git integration with Neogit and Diffview",
+    "Auto-completion with nvim-cmp",
+    "Syntax highlighting with Treesitter",
+    "Multiple colorscheme options",
+    "Smart code formatting with Conform",
+    "Tmux integration for seamless navigation"
+  ],
+  "publicApiSurface": [
+    "leyland.core.options",
+    "leyland.core.keymaps",
+    "leyland.core.autocommands",
+    "leyland.lazy",
+    "leyland.lsp",
+    "leyland.plugins.telescope",
+    "leyland.plugins.harpoon",
+    "leyland.plugins.nvim-tree",
+    "leyland.plugins.lsp.lsp",
+    "leyland.plugins.lsp.mason",
+    "leyland.plugins.nvim-cmp",
+    "leyland.plugins.treesitter",
+    "leyland.plugins.formatting",
+    "leyland.plugins.colorscheme",
+    "leyland.plugins.neogit",
+    "leyland.plugins.diffview",
+    "leyland.plugins.flash",
+    "leyland.plugins.snacks",
+    "leyland.plugins.trouble"
+  ]
+}
